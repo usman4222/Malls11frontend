@@ -7,6 +7,7 @@ import { handleLogout } from "@/utils/logoutHelper";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// import { freelancerRoutesConfig } from "../../config/freelancerRoutesConfig";
 
 export function Sidebar({ className }) {
   const location = useLocation();
@@ -31,6 +32,13 @@ export function Sidebar({ className }) {
           </NavItem>
         ))}
       </div>
+      {/* <div className="flex flex-col gap-2 p-4">
+        {freelancerRoutesConfig.map(({ path, name, icon }) => (
+          <NavItem key={path} to={path} icon={icon} activePath={location.pathname}>
+            {name}
+          </NavItem>
+        ))}
+      </div> */}
       <div className="mt-auto p-4">
         <Button onClick={onLogoutClick} className="w-full bg-red-400 cursor-pointer" variant="destructive">
           <LogOut className="mr-2 h-4 w-4" />

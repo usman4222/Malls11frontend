@@ -1,4 +1,4 @@
-import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS } from "../../store/slices/client/projectSlice";
+import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS } from "../../store/slices/client/projectSlice";
 import axiosInstance from "../../utils/axiosInstance";
 
 export const createProject = (formData) => async (dispatch) => {
@@ -18,5 +18,37 @@ export const createProject = (formData) => async (dispatch) => {
         // return { success: false, message: errorMessage };
         // console.log(errorMessage);
 
+    }
+};
+
+
+export const getAllClientProjects = () => async (dispatch) => {
+    try {
+        dispatch(GET_CLIENT_PROJECTS_REQUEST());
+        const { data } = await axiosInstance.get('/project/all-client-projects');
+        console.log("data", data);
+
+        dispatch(GET_CLIENT_PROJECTS_SUCCESS(data));
+    } catch (error) {
+        dispatch(GET_CLIENT_PROJECTS_FAIL(error.message || "Failed to fetch projects"));
+    }
+};
+
+
+
+
+export const updateClientProjectStatus = (projectId, newStatus) => async (dispatch) => {
+    dispatch(UPDATE_CLIENT_PROJECT_REQUEST());
+
+    try {
+        const { data } = await axiosInstance.patch(`/project/change-project-status/${projectId}`, { status: newStatus });
+
+        dispatch(UPDATE_CLIENT_PROJECT_SUCCESS(data.data));
+    } catch (error) {
+        dispatch(
+            UPDATE_CLIENT_PROJECT_FAIL(
+                error.response?.data?.message || "Failed to update project status"
+            )
+        );
     }
 };

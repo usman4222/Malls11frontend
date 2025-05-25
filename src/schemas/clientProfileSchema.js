@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const editProfileSchema = z.object({
+export const clientProfileSchema = z.object({
   profile_image: z.any()
     .refine(file => file instanceof File || file === "", {
       message: "Please upload an image file",

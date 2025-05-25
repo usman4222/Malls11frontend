@@ -9,6 +9,7 @@ import CientMeetings from "@/pages/dashboard/client/CientMeetings";
 import AllProjects from "@/pages/dashboard/client/AllProjects";
 import ClientServices from "@/pages/dashboard/client/ClientServices";
 import { Cast, FilePlus2, Home, LockKeyholeOpen, SquareChartGantt, Trash2, UserPen, VerifiedIcon, WalletCards, } from "lucide-react";
+import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects";
 
 
 export const clientRoutesConfig = [
@@ -41,6 +42,12 @@ export const clientRoutesConfig = [
     name: "Client Project",
     icon: <FilePlus2 className="mr-2 h-4 w-4" />,
     component: <ClientProject />,
+  },
+  {
+    path: "/dashboard/manage-project",
+    name: "Manage Project",
+    icon: <FilePlus2 className="mr-2 h-4 w-4" />,
+    component: <ManageClientProjects />,
   },
   {
     path: "/dashboard/all-proposals",

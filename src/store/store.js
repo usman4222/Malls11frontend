@@ -3,10 +3,12 @@ import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import userSlice from './slices/userSlice'
+import projectSlice from './slices/client/projectSlice'
 
 // Combine reducers
 const rootReducer = combineReducers({
   user: userSlice,
+  clientProjects: projectSlice
 })
 
 // Persist config

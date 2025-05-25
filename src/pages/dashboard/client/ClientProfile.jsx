@@ -29,7 +29,7 @@ import { Country, State } from 'country-state-city';
 import { useEffect, useState } from "react";
 import { createUserProfile } from "@/actions/profile/profileAction";
 import { useDispatch, useSelector } from "react-redux";
-import { editProfileSchema } from "@/schemas/editProfileSchema";
+import { clientProfileSchema } from "@/schemas/clientProfileSchema";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from "@/hooks/useAuth";
@@ -63,7 +63,7 @@ function EditProfileForm() {
 
 
   const form = useForm({
-    resolver: zodResolver(editProfileSchema),
+    resolver: zodResolver(clientProfileSchema),
     defaultValues: {
       categories: "",
       gender: "",
@@ -94,7 +94,7 @@ function EditProfileForm() {
       let imageUrl = formData.profile_image || "";
 
       console.log(imageUrl, "imageUrl");
-      
+
 
       if (file) {
         setImageUploading(true);
