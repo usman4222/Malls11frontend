@@ -7,7 +7,7 @@ import {
 import { FileText, CheckCircle, FileCheck, MessageSquare } from "lucide-react";
 import { useAuth } from "../../../hooks/useAuth";
 
-export function ClientDashboard() {
+export function FreelancerDashbaord() {
   const { user } = useAuth();
 
   return (

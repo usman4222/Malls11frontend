@@ -5,9 +5,9 @@ import { ProtectedRoute } from "./ProtectedRoute";
 
 const clientRoutes = () => (
   <Route
-    path="/dashboard"
+    path="/client-dashboard"
     element={
-      <ProtectedRoute allowedRoles={["freelancer", "client"]}>
+      <ProtectedRoute allowedRoles={["client"]}>
         <DashboardLayout />
       </ProtectedRoute>
     }
@@ -16,7 +16,11 @@ const clientRoutes = () => (
     {clientRoutesConfig.map(({ path, component }) => (
       <Route
         key={path}
-        path={path === "/dashboard" ? "" : path.replace("/dashboard/", "")}
+        path={
+          path === "/client-dashboard"
+            ? ""
+            : path.replace("/client-dashboard/", "")
+        }
         element={component}
       />
     ))}
