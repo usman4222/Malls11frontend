@@ -98,6 +98,30 @@ const projectSlice = createSlice({
       state.success = false;
       state.error = action.payload;
     },
+
+
+    // Update Project Visibility
+    UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.success = false;
+    },
+    UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS: (state, action) => {
+      state.loading = false;
+      state.success = true;
+      const updatedProject = action.payload;
+      // Update the project in the list
+      state.projects = state.projects.map((p) =>
+        p._id === updatedProject._id ? updatedProject : p
+      );
+      state.error = null;
+    },
+    UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL: (state, action) => {
+      state.loading = false;
+      state.success = false;
+      state.error = action.payload;
+    },
+
   },
 });
 
@@ -120,6 +144,12 @@ export const {
   UPDATE_CLIENT_PROJECT_REQUEST,
   UPDATE_CLIENT_PROJECT_SUCCESS,
   UPDATE_CLIENT_PROJECT_FAIL,
+
+
+  UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST,
+  UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS,
+  UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL
+
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

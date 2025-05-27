@@ -32,9 +32,10 @@ import {
     SelectValue,
 } from "@/components/SiteComponents/ui/select";
 import { Label } from "@/components/SiteComponents/ui/label";
-import { getAllClientProjects, updateClientProjectStatus } from "../../../actions/clientActions/projectAction";
+import { deleteClientProject, getAllClientProjects, updateClientProjectStatus, updateClientProjectVisibility } from "../../../actions/clientActions/projectAction";
 import { useDispatch, useSelector } from "react-redux";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ManageClientProjects({ type, project, onSave, onCancel }) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -42,10 +43,6 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
     const dispatch = useDispatch();
     const projectsData = useSelector((state) => state.clientProjects.projects);
     const [projects, setProjects] = useState([]);
-
-
-    console.log("projectsData", projectsData);
-
 
     useEffect(() => {
         if (projectsData) {
@@ -56,19 +53,35 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
         }
     }, [projectsData]);
 
-    const handleVisibilityToggle = (projectId, currentStatus) => {
-        const newStatus = currentStatus === "active" ? "in_active" : "active";
 
-        // Update local state immediately
+    const handleVisibilityToggle = (projectId, currentVisibility) => {
+        const newVisibility = currentVisibility === "public" ? "private" : "public";
+
         setProjects(prev =>
             prev.map(proj =>
-                proj._id === projectId ? { ...proj, status: newStatus } : proj
+                proj._id === projectId ? { ...proj, visibility: newVisibility } : proj
             )
         );
 
-        // Dispatch API call to update on backend
-        dispatch(updateClientProjectStatus(projectId, newStatus));
+        dispatch(updateClientProjectVisibility(projectId, newVisibility));
+        toast.success(`Project visibility updated to ${newVisibility}`);
     };
+
+
+    const handleDelete = async (projectId) => {
+        if (window.confirm("Are you sure you want to delete this project?")) {
+            dispatch(deleteClientProject(projectId))
+                .then(() => {
+                    setProjects(prevProjects => prevProjects.filter(p => p._id !== projectId));
+                    toast.success("Project deleted successfully!");
+                })
+                .catch((error) => {
+                    toast.error("Failed to delete the project");
+                    console.error("Delete error:", error);
+                });
+        }
+    };
+
 
 
     useEffect(() => {
@@ -76,45 +89,14 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
         dispatch(getAllClientProjects());
     }, [project, dispatch]);
 
-
-    const projectsArray = projectsData
-        ? Object.keys(projectsData)
-            .filter(key => !isNaN(Number(key)))
-            .map(key => projectsData[key])
-        : [];
-
     const filteredProjects = projects.filter(project =>
         project.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-
-    // const filteredProjects = projectsArray.filter(project =>
-    //     project.title.toLowerCase().includes(searchQuery.toLowerCase())
-    // );
-
-    // const handleVisibilityToggle = (projectId, currentStatus) => {
-    //     const newStatus = currentStatus === "active" ? "in_active" : "active";
-    //     console.log("Updating project visibility:", projectId, "to", newStatus);
-    //     dispatch(updateClientProjectStatus(projectId, newStatus));
-    // };
-
-
-
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSave(formData);
-    };
-
     return (
         <div className="container mx-auto py-10 px-10 bg-[#F0EFEC]">
             <h1 className="text-3xl font-semibold mb-8">Manage {type}</h1>
-
+            <ToastContainer />
             <Card className="p-6">
                 <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
                     <div className="relative flex-1">
@@ -201,14 +183,14 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                                                 <input
                                                     type="checkbox"
                                                     className="sr-only peer"
-                                                    checked={project.status === "active"}
+                                                    checked={project.visibility === "public"}
                                                     // checked={project.isPublic}
-                                                    onChange={() => handleVisibilityToggle(project._id, project.status)}
+                                                    onChange={() => handleVisibilityToggle(project._id, project.visibility)}
                                                 />
 
                                                 <div className="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                                                 <span className="ml-3 text-sm font-medium text-gray-900">
-                                                    {project.status === "active" ? "active" : "in_active"}
+                                                    {project.visibility === "public" ? "public" : "private"}
                                                 </span>
                                             </Label>
                                         </div>
@@ -231,7 +213,7 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                                                     <Pencil />
                                                 </Link>
                                             </Button>
-                                            <Button variant="outline" size="icon">
+                                            <Button onClick={() => handleDelete(project._id)} variant="outline" size="icon">
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>

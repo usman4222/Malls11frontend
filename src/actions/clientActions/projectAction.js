@@ -1,4 +1,4 @@
-import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS } from "../../store/slices/client/projectSlice";
+import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS, UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL, UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST, UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS } from "../../store/slices/client/projectSlice";
 import axiosInstance from "../../utils/axiosInstance";
 
 export const createProject = (formData) => async (dispatch) => {
@@ -47,6 +47,41 @@ export const updateClientProjectStatus = (projectId, newStatus) => async (dispat
     } catch (error) {
         dispatch(
             UPDATE_CLIENT_PROJECT_FAIL(
+                error.response?.data?.message || "Failed to update project status"
+            )
+        );
+    }
+};
+
+
+
+export const updateClientProjectVisibility = (projectId, newVisibility) => async (dispatch) => {
+    dispatch(UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST());
+
+    try {
+        const { data } = await axiosInstance.patch(`/project/change-project-visibility/${projectId}`, { visibility: newVisibility });
+
+        dispatch(UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS(data.data));
+    } catch (error) {
+        dispatch(
+            UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL(
+                error.response?.data?.message || "Failed to update project status"
+            )
+        );
+    }
+};
+
+
+export const deleteClientProject = (projectId) => async (dispatch) => {
+    dispatch(DELETE_CLIENT_PROJECT_REQUEST());
+
+    try {
+        const { data } = await axiosInstance.delete(`/project/delete-project/${projectId}`);
+
+        dispatch(DELETE_CLIENT_PROJECT_SUCCESS(data.data));
+    } catch (error) {
+        dispatch(
+            DELETE_CLIENT_PROJECT_FAIL(
                 error.response?.data?.message || "Failed to update project status"
             )
         );
