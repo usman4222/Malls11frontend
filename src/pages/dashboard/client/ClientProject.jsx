@@ -33,69 +33,76 @@ import { Checkbox } from "@/components/SiteComponents/ui/checkbox";
 import { SkillsSearch } from "@/components/DashboardComponents/ClientDashboardCompoents/SkillSearch";
 import { createProject } from "../../../actions/clientActions/projectAction";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "@/hooks/useAuth";
 import { uploadFileToCloudinary } from "@/utils/uploadFileToCloudinary";
 
-
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  category: z.string().min(1, "Category is required"),
-  project_type: z.string().min(1, "Project Type is required"),
-  management_type: z.string().min(1, "Management Type is required"),
-  duration: z.string().min(1, "Duration is required"),
-  experience: z.string().min(1, "Experience is required"),
-  location: z.string().min(1, "Location is required"),
-  language: z.string().min(1, "Language is required"),
-  skills: z.string().min(1, "At least one skill is required"),
-  project_des: z.string().min(1, "Description is required"),
-  project_doc: z
-    .any()
-    .refine((file) => file instanceof File, {
+const formSchema = z
+  .object({
+    title: z.string().min(1, "Title is required"),
+    category: z.string().min(1, "Category is required"),
+    project_type: z.string().min(1, "Project Type is required"),
+    management_type: z.string().min(1, "Management Type is required"),
+    duration: z.string().min(1, "Duration is required"),
+    experience: z.string().min(1, "Experience is required"),
+    location: z.string().min(1, "Location is required"),
+    language: z.string().min(1, "Language is required"),
+    skills: z.string().min(1, "At least one skill is required"),
+    project_des: z.string().min(1, "Description is required"),
+    project_doc: z.any().refine((file) => file instanceof File, {
       message: "Project Document is required",
     }),
 
-  fixed_price: z
-    .number()
-    .positive("Fixed price must be positive")
-    .optional(),
+    fixed_price: z.number().positive("Fixed price must be positive").optional(),
 
-  min_hourly_rate: z
-    .number()
-    .positive("Min hourly rate must be positive")
-    .optional(),
+    min_hourly_rate: z
+      .number()
+      .positive("Min hourly rate must be positive")
+      .optional(),
 
-  max_hourly_rate: z
-    .number()
-    .positive("Max hourly rate must be positive")
-    .optional(),
-})
-  .refine((data) => {
-    // Require fixed_price if project_type is fixed
-    if (data.project_type === "fixed") {
-      return data.fixed_price !== undefined;
-    }
-    // Require min and max hourly rates if project_type is hourly
-    if (data.project_type === "hourly") {
-      return data.min_hourly_rate !== undefined && data.max_hourly_rate !== undefined;
-    }
-    return true;
-  }, {
-    message: "Please provide price fields for the selected project type",
-    path: ["fixed_price"],
+    max_hourly_rate: z
+      .number()
+      .positive("Max hourly rate must be positive")
+      .optional(),
   })
-  .refine((data) => {
-    // If hourly, min_hourly_rate must be <= max_hourly_rate
-    if (data.project_type === "hourly" && data.min_hourly_rate !== undefined && data.max_hourly_rate !== undefined) {
-      return data.min_hourly_rate <= data.max_hourly_rate;
+  .refine(
+    (data) => {
+      // Require fixed_price if project_type is fixed
+      if (data.project_type === "fixed") {
+        return data.fixed_price !== undefined;
+      }
+      // Require min and max hourly rates if project_type is hourly
+      if (data.project_type === "hourly") {
+        return (
+          data.min_hourly_rate !== undefined &&
+          data.max_hourly_rate !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message: "Please provide price fields for the selected project type",
+      path: ["fixed_price"],
     }
-    return true;
-  }, {
-    message: "Min hourly rate must be less than or equal to Max hourly rate",
-    path: ["max_hourly_rate"],
-  });
-
+  )
+  .refine(
+    (data) => {
+      // If hourly, min_hourly_rate must be <= max_hourly_rate
+      if (
+        data.project_type === "hourly" &&
+        data.min_hourly_rate !== undefined &&
+        data.max_hourly_rate !== undefined
+      ) {
+        return data.min_hourly_rate <= data.max_hourly_rate;
+      }
+      return true;
+    },
+    {
+      message: "Min hourly rate must be less than or equal to Max hourly rate",
+      path: ["max_hourly_rate"],
+    }
+  );
 
 function ClientProject() {
   const form = useForm({
@@ -129,8 +136,6 @@ function ClientProject() {
     { value: "CSS", label: "CSS" },
   ];
 
-
-
   useEffect(() => {
     console.log("Form errors:", form.formState.errors);
   }, [form.formState.errors]);
@@ -139,7 +144,6 @@ function ClientProject() {
     try {
       setLoading(true);
 
-
       let documentUrl = "";
       if (formData.project_doc) {
         documentUrl = await uploadFileToCloudinary(formData.project_doc);
@@ -147,26 +151,22 @@ function ClientProject() {
 
       const payload = {
         ...formData,
-        fixed_price: selectedProjectType === "fixed" ? formData.fixed_price : null,
+        fixed_price:
+          selectedProjectType === "fixed" ? formData.fixed_price : null,
         hourly_rate:
           selectedProjectType === "hourly"
             ? {
-              min: formData.min_hourly_rate,
-              max: formData.max_hourly_rate,
-            }
+                min: formData.min_hourly_rate,
+                max: formData.max_hourly_rate,
+              }
             : null,
         userId: user?.currentUser?.id,
-        project_doc: documentUrl
+        project_doc: documentUrl,
       };
 
-      const response = await dispatch(createProject(payload));
+      await dispatch(createProject(payload));
 
-      if (!response?.success) {
-        toast.error("Something error");
-        return;
-      }
-
-      toast.success("Profile updated successfully!");
+      toast.success("Project created successfully!");
     } catch (error) {
       console.log("error", error);
 
@@ -176,12 +176,10 @@ function ClientProject() {
     }
   };
 
-
   return (
     <div className="p-10 bg-[#F0EFEC]">
       <ToastContainer />
       <h1 className="text-2xl font-semibold">Post a New Job</h1>
-
 
       <Card className="mt-4">
         <CardHeader>
@@ -192,7 +190,6 @@ function ClientProject() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
-
                 <FormField
                   control={form.control}
                   name="title"
@@ -206,7 +203,6 @@ function ClientProject() {
                     </FormItem>
                   )}
                 />
-
 
                 <FormField
                   control={form.control}
@@ -231,7 +227,6 @@ function ClientProject() {
                     </FormItem>
                   )}
                 />
-
 
                 <FormField
                   control={form.control}
@@ -261,7 +256,6 @@ function ClientProject() {
                   )}
                 />
 
-
                 {selectedProjectType === "fixed" && (
                   <div className="md:col-span-2">
                     <FormField
@@ -271,10 +265,20 @@ function ClientProject() {
                         <FormItem>
                           <FormLabel>Fixed Price *</FormLabel>
                           <FormControl>
-                            <Input type="number" placeholder="Enter fixed price" {...field}
-                              onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
-                              value={field.value ?? ''}
-                              min={0} />
+                            <Input
+                              type="number"
+                              placeholder="Enter fixed price"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value === ""
+                                    ? undefined
+                                    : Number(e.target.value)
+                                )
+                              }
+                              value={field.value ?? ""}
+                              min={0}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -292,9 +296,18 @@ function ClientProject() {
                         <FormItem>
                           <FormLabel>Min Hourly Rate *</FormLabel>
                           <FormControl>
-                            <Input type="number" placeholder="Minimum hourly rate" {...field}
-                              onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
-                              value={field.value ?? ''}
+                            <Input
+                              type="number"
+                              placeholder="Minimum hourly rate"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value === ""
+                                    ? undefined
+                                    : Number(e.target.value)
+                                )
+                              }
+                              value={field.value ?? ""}
                               min={0}
                             />
                           </FormControl>
@@ -309,9 +322,18 @@ function ClientProject() {
                         <FormItem>
                           <FormLabel>Max Hourly Rate *</FormLabel>
                           <FormControl>
-                            <Input type="number" placeholder="Maximum hourly rate" {...field}
-                              onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
-                              value={field.value ?? ''}
+                            <Input
+                              type="number"
+                              placeholder="Maximum hourly rate"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value === ""
+                                    ? undefined
+                                    : Number(e.target.value)
+                                )
+                              }
+                              value={field.value ?? ""}
                               min={0}
                             />
                           </FormControl>
@@ -321,8 +343,6 @@ function ClientProject() {
                     />
                   </>
                 )}
-
-
 
                 <FormField
                   control={form.control}
@@ -345,7 +365,6 @@ function ClientProject() {
                     </FormItem>
                   )}
                 />
-
 
                 <FormField
                   control={form.control}
@@ -373,7 +392,6 @@ function ClientProject() {
                   )}
                 />
 
-
                 <FormField
                   control={form.control}
                   name="experience"
@@ -388,7 +406,9 @@ function ClientProject() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="beginner">Beginner</SelectItem>
-                          <SelectItem value="intermediate">Intermediate</SelectItem>
+                          <SelectItem value="intermediate">
+                            Intermediate
+                          </SelectItem>
                           <SelectItem value="expert">Expert</SelectItem>
                         </SelectContent>
                       </Select>
@@ -421,7 +441,6 @@ function ClientProject() {
                   )}
                 />
 
-
                 <FormField
                   control={form.control}
                   name="language"
@@ -448,7 +467,6 @@ function ClientProject() {
                 />
               </div>
 
-
               <FormField
                 control={form.control}
                 name="project_des"
@@ -471,7 +489,6 @@ function ClientProject() {
         </CardContent>
       </Card>
 
-
       <Card className="mt-4">
         <CardHeader>
           <h2 className="text-sm font-semibold">Attachment *</h2>
@@ -481,7 +498,6 @@ function ClientProject() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="flex gap-4">
-
                 <FormField
                   control={form.control}
                   name="project_doc"
@@ -492,7 +508,9 @@ function ClientProject() {
                         <Input
                           type="file"
                           accept="image/*,.pdf,.doc,.docx"
-                          onChange={(e) => field.onChange(e.target.files?.[0] || null)}
+                          onChange={(e) =>
+                            field.onChange(e.target.files?.[0] || null)
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -522,7 +540,6 @@ function ClientProject() {
         </CardContent>
       </Card>
 
-
       <Card className="mt-4">
         <CardHeader>
           <h2 className="text-sm font-semibold">Skills</h2>
@@ -531,33 +548,41 @@ function ClientProject() {
         <CardContent className="mt-5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
               {/* SKILLS FIELD */}
-              <FormField name="skills" control={form.control} render={({ field }) => (
-                <FormItem>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Skills" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {skillOptions.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <Button type="submit" className="mt-4 cursor-pointer" disabled={loading}>
+              <FormField
+                name="skills"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Skills" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {skillOptions.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="mt-4 cursor-pointer"
+                disabled={loading}
+              >
                 {loading ? "Creating..." : "Create Project"}
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
-
     </div>
   );
 }

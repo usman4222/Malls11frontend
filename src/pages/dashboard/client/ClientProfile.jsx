@@ -123,7 +123,7 @@ function EditProfileForm() {
 
       toast.success("Profile updated successfully!");
       setFile(null);
-      reset();
+      // reset();
     } catch (error) {
       const message =
         error?.response?.data?.message ||
