@@ -20,8 +20,7 @@ export default function FreelancerProfile() {
     resolver: zodResolver(freelancerProfileSchema),
     defaultValues: {
       featuredImage: "",
-      fullName: "",
-      whatsappNumber: "",
+      whatsapp_no: "",
       gender: "",
       dateOfBirth: "",
       country: "",
@@ -75,13 +74,7 @@ export default function FreelancerProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <InputField
                     control={form.control}
-                    name="fullName"
-                    label="Full Name*"
-                    placeholder="Enter your full name"
-                  />
-                  <InputField
-                    control={form.control}
-                    name="whatsappNumber"
+                    name="whatsapp_no"
                     label="WhatsApp Number*"
                     placeholder="Enter your WhatsApp number"
                     type="tel"
@@ -195,7 +188,7 @@ export default function FreelancerProfile() {
                   label="Upload CV*"
                 />
                 <DynamicFieldsInput form={form} />
-                <Button type="submit" className="w-full md:w-auto">
+                <Button type="submit" className="w-full md:w-auto cursor-pointer">
                   Save Profile
                 </Button>
               </div>

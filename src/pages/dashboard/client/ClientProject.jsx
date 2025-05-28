@@ -37,6 +37,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "@/hooks/useAuth";
 import { uploadFileToCloudinary } from "@/utils/uploadFileToCloudinary";
+import { JobsCategories } from "../../../components/DashboardComponents/ClientDashboardCompoents/JobsCategories";
 
 const formSchema = z
   .object({
@@ -48,11 +49,9 @@ const formSchema = z
     experience: z.string().min(1, "Experience is required"),
     location: z.string().min(1, "Location is required"),
     language: z.string().min(1, "Language is required"),
-    skills: z.string().min(1, "At least one skill is required"),
+    skills: z.array(z.string()).min(1, "At least one skill is required"),
     project_des: z.string().min(1, "Description is required"),
-    project_doc: z.any().refine((file) => file instanceof File, {
-      message: "Project Document is required",
-    }),
+    project_doc: z.any().optional(),
 
     fixed_price: z.number().positive("Fixed price must be positive").optional(),
 
@@ -118,7 +117,7 @@ function ClientProject() {
       language: "",
       project_doc: null,
       // attachmentImage: null,
-      skills: "",
+      skills: [],
       project_des: "",
     },
   });
@@ -126,15 +125,6 @@ function ClientProject() {
   const { user, token } = useAuth();
   const dispatch = useDispatch();
   const [selectedProjectType, setSelectedProjectType] = useState("");
-
-  const skillOptions = [
-    { value: "JavaScript", label: "JavaScript" },
-    { value: "React", label: "React" },
-    { value: "Node.js", label: "Node.js" },
-    { value: "MongoDB", label: "MongoDB" },
-    { value: "HTML", label: "HTML" },
-    { value: "CSS", label: "CSS" },
-  ];
 
   useEffect(() => {
     console.log("Form errors:", form.formState.errors);
@@ -156,12 +146,13 @@ function ClientProject() {
         hourly_rate:
           selectedProjectType === "hourly"
             ? {
-                min: formData.min_hourly_rate,
-                max: formData.max_hourly_rate,
-              }
+              min: formData.min_hourly_rate,
+              max: formData.max_hourly_rate,
+            }
             : null,
         userId: user?.currentUser?.id,
         project_doc: documentUrl,
+        skills: formData.skills,
       };
 
       await dispatch(createProject(payload));
@@ -216,12 +207,7 @@ function ClientProject() {
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="tech">Technology</SelectItem>
-                          <SelectItem value="health">Healthcare</SelectItem>
-                          <SelectItem value="edu">Education</SelectItem>
-                          <SelectItem value="finance">Finance</SelectItem>
-                        </SelectContent>
+                        <JobsCategories />
                       </Select>
                       <FormMessage />
                     </FormItem>
@@ -554,20 +540,13 @@ function ClientProject() {
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Skills" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {skillOptions.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Skills *</FormLabel>
+                    <FormControl>
+                      <SkillsSearch
+                        selectedSkills={field.value || []}
+                        onSkillsChange={field.onChange}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
