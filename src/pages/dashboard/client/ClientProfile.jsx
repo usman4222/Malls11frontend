@@ -25,23 +25,16 @@ import { CalendarIcon, Instagram, Facebook, Linkedin, Twitter } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/SiteComponents/ui/card";
 import { Separator } from "@/components/SiteComponents/ui/separator";
-import { Country, State } from 'country-state-city';
 import { useEffect, useState } from "react";
 import { createUserProfile } from "@/actions/profile/profileAction";
-import { useDispatch, useSelector } from "react-redux";
-import { clientProfileSchema } from "@/schemas/clientProfileSchema";
+import { useDispatch } from "react-redux";
+import clientProfileSchema from "../../../schemas/clientProfileSchema";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from "@/hooks/useAuth";
 import { uploadImageToCloudinary } from "../../../utils/uploadImage";
-
-const categories = [
-  { id: 1, name: "Web Development" },
-  { id: 2, name: "Graphic Design" },
-  { id: 3, name: "Content Writing" },
-  { id: 4, name: "Digital Marketing" },
-  { id: 5, name: "Data Science" },
-];
+import { CategoriesSelectContent } from "../../../components/DashboardComponents/ClientDashboardCompoents/JobsCategories";
+import { getAllCountries, getStatesOfCountry } from "../../../utils/geoData";
 
 const genderOptions = [
   { label: "Male", value: "male" },
@@ -52,15 +45,23 @@ const genderOptions = [
 function EditProfileForm() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [file, setFile] = useState(null);
-  const [imageURL, setImageURL] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [fileName, setFileName] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
+  const { token } = useAuth();
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
 
-  const { user, token } = useAuth();
+  useEffect(() => {
+    setCountries(getAllCountries());
+  }, []);
 
+  const handleCountryChange = (event) => {
+    const selectedCountry = event.target.value;
+    const stateList = getStatesOfCountry(selectedCountry);
+    setStates(stateList);
+  };
 
   const form = useForm({
     resolver: zodResolver(clientProfileSchema),
@@ -80,21 +81,12 @@ function EditProfileForm() {
     },
   });
 
-  useEffect(() => {
-    console.log("Form errors:", form.formState.errors);
-  }, [form.formState.errors]);
-
-
-
 
   const onSubmit = async (formData) => {
     try {
       setIsLoading(true);
 
       let imageUrl = formData.profile_image || "";
-
-      console.log(imageUrl, "imageUrl");
-
 
       if (file) {
         setImageUploading(true);
@@ -113,13 +105,7 @@ function EditProfileForm() {
         profile_image: imageUrl,
       };
 
-
-      const response = await dispatch(createUserProfile(payload, token));
-
-      if (response?.success === false) {
-        toast.error(response?.message || "Profile update failed");
-        return;
-      }
+      await dispatch(createUserProfile(payload, token)).unwrap();
 
       toast.success("Profile updated successfully!");
       setFile(null);
@@ -279,9 +265,7 @@ function EditProfileForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
-                        ))}
+                        <CategoriesSelectContent />
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -294,41 +278,51 @@ function EditProfileForm() {
                 <FormField name="country" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>Country *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleCountryChange({ target: { value } });
+                      }}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="PK">Pakistan</SelectItem>
-                        <SelectItem value="IN">India</SelectItem>
-                        <SelectItem value="US">United States</SelectItem>
-                        <SelectItem value="UK">United Kingdom</SelectItem>
+                        {countries.map((country) => (
+                          <SelectItem key={country} value={country}>
+                            {country}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )} />
+
                 <FormField name="state" control={form.control} render={({ field }) => (
                   <FormItem>
                     <FormLabel>State *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={states.length === 0}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select state" />
+                          <SelectValue placeholder={states.length ? "Select state" : "Select country first"} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Punjab">Punjab</SelectItem>
-                        <SelectItem value="Sindh">Sindh</SelectItem>
-                        <SelectItem value="California">California</SelectItem>
-                        <SelectItem value="Texas">Texas</SelectItem>
+                        {states.map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )} />
+
               </div>
 
               {/* Gender */}
@@ -391,7 +385,7 @@ function EditProfileForm() {
 
               <Button
                 type="submit"
-                className="mt-4 w-full"
+                className="mt-4 w-full cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Saving..." : "Save Profile"}

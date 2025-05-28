@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const clientProfileSchema = z.object({
+const clientProfileSchema = z.object({
   profile_image: z.any()
     .refine(file => file instanceof File || file === "", {
       message: "Please upload an image file",
@@ -26,3 +26,5 @@ export const clientProfileSchema = z.object({
   linkedinUrl: z.string().url("Invalid URL").or(z.literal("")),
   twitterUrl: z.string().url("Invalid URL").or(z.literal("")),
 });
+
+export default clientProfileSchema;

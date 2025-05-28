@@ -3,7 +3,7 @@ import {
     SelectItem
 } from "../../SiteComponents/ui/select";
 
-export function JobsCategories() {
+export function CategoriesSelectContent() {
     return (
         <SelectContent>
             <SelectItem value="tech">Technology</SelectItem>

@@ -28,84 +28,21 @@ import {
   SelectValue,
 } from "@/components/SiteComponents/ui/select";
 import { Textarea } from "@/components/SiteComponents/ui/textarea";
-import { Label } from "@/components/SiteComponents/ui/label";
-import { Checkbox } from "@/components/SiteComponents/ui/checkbox";
 import { SkillsSearch } from "@/components/DashboardComponents/ClientDashboardCompoents/SkillSearch";
 import { createProject } from "../../../actions/clientActions/projectAction";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "@/hooks/useAuth";
 import { uploadFileToCloudinary } from "@/utils/uploadFileToCloudinary";
-import { JobsCategories } from "../../../components/DashboardComponents/ClientDashboardCompoents/JobsCategories";
-
-const formSchema = z
-  .object({
-    title: z.string().min(1, "Title is required"),
-    category: z.string().min(1, "Category is required"),
-    project_type: z.string().min(1, "Project Type is required"),
-    management_type: z.string().min(1, "Management Type is required"),
-    duration: z.string().min(1, "Duration is required"),
-    experience: z.string().min(1, "Experience is required"),
-    location: z.string().min(1, "Location is required"),
-    language: z.string().min(1, "Language is required"),
-    skills: z.array(z.string()).min(1, "At least one skill is required"),
-    project_des: z.string().min(1, "Description is required"),
-    project_doc: z.any().optional(),
-
-    fixed_price: z.number().positive("Fixed price must be positive").optional(),
-
-    min_hourly_rate: z
-      .number()
-      .positive("Min hourly rate must be positive")
-      .optional(),
-
-    max_hourly_rate: z
-      .number()
-      .positive("Max hourly rate must be positive")
-      .optional(),
-  })
-  .refine(
-    (data) => {
-      // Require fixed_price if project_type is fixed
-      if (data.project_type === "fixed") {
-        return data.fixed_price !== undefined;
-      }
-      // Require min and max hourly rates if project_type is hourly
-      if (data.project_type === "hourly") {
-        return (
-          data.min_hourly_rate !== undefined &&
-          data.max_hourly_rate !== undefined
-        );
-      }
-      return true;
-    },
-    {
-      message: "Please provide price fields for the selected project type",
-      path: ["fixed_price"],
-    }
-  )
-  .refine(
-    (data) => {
-      // If hourly, min_hourly_rate must be <= max_hourly_rate
-      if (
-        data.project_type === "hourly" &&
-        data.min_hourly_rate !== undefined &&
-        data.max_hourly_rate !== undefined
-      ) {
-        return data.min_hourly_rate <= data.max_hourly_rate;
-      }
-      return true;
-    },
-    {
-      message: "Min hourly rate must be less than or equal to Max hourly rate",
-      path: ["max_hourly_rate"],
-    }
-  );
+import { CategoriesSelectContent } from "../../../components/DashboardComponents/ClientDashboardCompoents/JobsCategories";
+import ClientProjectSchema from "../../../schemas/ClientProjectSchema";
+import { getAllCountries } from "../../../utils/geoData";
+import languages from "../../../data/languages.json";
 
 function ClientProject() {
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(ClientProjectSchema),
     defaultValues: {
       title: "",
       category: "",
@@ -125,6 +62,11 @@ function ClientProject() {
   const { user, token } = useAuth();
   const dispatch = useDispatch();
   const [selectedProjectType, setSelectedProjectType] = useState("");
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    setCountries(getAllCountries());
+  }, []);
 
   useEffect(() => {
     console.log("Form errors:", form.formState.errors);
@@ -207,7 +149,7 @@ function ClientProject() {
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                         </FormControl>
-                        <JobsCategories />
+                        <CategoriesSelectContent />
                       </Select>
                       <FormMessage />
                     </FormItem>
@@ -416,10 +358,11 @@ function ClientProject() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="us">United States</SelectItem>
-                          <SelectItem value="uk">United Kingdom</SelectItem>
-                          <SelectItem value="ca">Canada</SelectItem>
-                          <SelectItem value="au">Australia</SelectItem>
+                          {countries.map((country) => (
+                            <SelectItem key={country} value={country}>
+                              {country}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -440,17 +383,18 @@ function ClientProject() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="English">English</SelectItem>
-                          <SelectItem value="Urdu">Urdu</SelectItem>
-                          <SelectItem value="Italian">Italian</SelectItem>
-                          <SelectItem value="French">French</SelectItem>
-                          <SelectItem value="Japanese">Japanese</SelectItem>
+                          {languages.map((lang) => (
+                            <SelectItem key={lang} value={lang}>
+                              {lang}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
               </div>
 
               <FormField
