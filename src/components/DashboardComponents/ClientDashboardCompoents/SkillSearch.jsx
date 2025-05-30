@@ -55,12 +55,12 @@ export function SkillsSearch({ selectedSkills = [], onSkillsChange, ...props }) 
       </div>
       <div className="flex flex-wrap gap-2">
         {selectedSkills.map((skill, index) => (
-          <Badge key={index} variant="secondary" className="bg-gray-200">
+          <Badge key={index} variant="secondary">
             {skill}
             <Button
               variant="ghost"
               size="sm"
-              className="ml-2 h-4 w-4 p-0 hover:bg-gray-300 cursor-pointer"
+              className="ml-2 h-4 w-4 p-0 cursor-pointer"
               onClick={() => handleRemoveSkill(skill)}
             >
               ×

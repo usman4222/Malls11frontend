@@ -1,4 +1,5 @@
 import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS, UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL, UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST, UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS } from "../../store/slices/client/projectSlice";
+import { GET_ALL_PROJECTS_FAIL, GET_ALL_PROJECTS_REQUEST, GET_ALL_PROJECTS_SUCCESS } from "../../store/slices/projects/allProjectSlice";
 import axiosInstance from "../../utils/axiosInstance";
 
 export const createProject = (formData) => async (dispatch) => {
@@ -33,6 +34,24 @@ export const getAllClientProjects = () => async (dispatch) => {
         dispatch(GET_CLIENT_PROJECTS_FAIL(error.message || "Failed to fetch projects"));
     }
 };
+
+
+export const getAllProjects = () => async (dispatch) => {
+    try {
+        dispatch(GET_ALL_PROJECTS_REQUEST());
+
+        const response = await axiosInstance.get('/project/all-projects');
+
+        const projects = response.data
+
+        dispatch(GET_ALL_PROJECTS_SUCCESS(projects));
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        dispatch(GET_ALL_PROJECTS_FAIL(error.message || "Failed to fetch projects"));
+    }
+};
+
+
 
 
 

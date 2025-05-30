@@ -18,16 +18,12 @@ import { Button } from "../../SiteComponents/ui/button";
 import { PlusCircle, X } from "lucide-react";
 
 const FIELD_TYPES = {
-  skills: ["React", "Node.js", "Python"],
   awards: null,
-  faqs: null,
 };
 
 const DynamicFieldsInput = ({ form }) => {
   const [fields, setFields] = useState({
-    skills: [""],
     awards: [""],
-    faqs: [""],
   });
 
   const handleChange = (index, type, value) => {

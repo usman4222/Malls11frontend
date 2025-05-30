@@ -5,16 +5,16 @@ const initialState = {
   error: null,
   success: false,
   createdProject: null,
-  projects: [],      // for all projects
+  clientProjects: [], 
   loadingProjects: false,
   errorProjects: null,
 };
 
 const projectSlice = createSlice({
-  name: "project",
+  name: "clientProject",
   initialState,
   reducers: {
-    // Create Project reducers
+    // Create Project
     CREATE_PROJECT_REQUEST: (state) => {
       state.loading = true;
       state.error = null;
@@ -38,14 +38,14 @@ const projectSlice = createSlice({
       state.createdProject = null;
     },
 
-    // Get All Projects reducers
+    // Get Client Projects
     GET_CLIENT_PROJECTS_REQUEST: (state) => {
       state.loadingProjects = true;
       state.errorProjects = null;
     },
     GET_CLIENT_PROJECTS_SUCCESS: (state, action) => {
       state.loadingProjects = false;
-      state.projects = action.payload;
+      state.clientProjects = action.payload;
       state.errorProjects = null;
     },
     GET_CLIENT_PROJECTS_FAIL: (state, action) => {
@@ -55,10 +55,10 @@ const projectSlice = createSlice({
     RESET_CLIENT_PROJECTS_STATE: (state) => {
       state.loadingProjects = false;
       state.errorProjects = null;
-      state.projects = [];
+      state.clientProjects = [];
     },
 
-
+    // Delete Project
     DELETE_CLIENT_PROJECT_REQUEST: (state) => {
       state.loading = true;
       state.error = null;
@@ -67,8 +67,9 @@ const projectSlice = createSlice({
     DELETE_CLIENT_PROJECT_SUCCESS: (state, action) => {
       state.loading = false;
       state.success = true;
-      // Remove deleted project from the projects list
-      state.projects = state.projects.filter(p => p._id !== action.payload);
+      state.clientProjects = state.clientProjects.filter(
+        (p) => p._id !== action.payload
+      );
       state.error = null;
     },
     DELETE_CLIENT_PROJECT_FAIL: (state, action) => {
@@ -87,8 +88,7 @@ const projectSlice = createSlice({
       state.loading = false;
       state.success = true;
       const updatedProject = action.payload;
-      // Update the project in the list
-      state.projects = state.projects.map((p) =>
+      state.clientProjects = state.clientProjects.map((p) =>
         p._id === updatedProject._id ? updatedProject : p
       );
       state.error = null;
@@ -98,7 +98,6 @@ const projectSlice = createSlice({
       state.success = false;
       state.error = action.payload;
     },
-
 
     // Update Project Visibility
     UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST: (state) => {
@@ -110,8 +109,7 @@ const projectSlice = createSlice({
       state.loading = false;
       state.success = true;
       const updatedProject = action.payload;
-      // Update the project in the list
-      state.projects = state.projects.map((p) =>
+      state.clientProjects = state.clientProjects.map((p) =>
         p._id === updatedProject._id ? updatedProject : p
       );
       state.error = null;
@@ -121,7 +119,6 @@ const projectSlice = createSlice({
       state.success = false;
       state.error = action.payload;
     },
-
   },
 });
 
@@ -136,7 +133,6 @@ export const {
   GET_CLIENT_PROJECTS_FAIL,
   RESET_CLIENT_PROJECTS_STATE,
 
-
   DELETE_CLIENT_PROJECT_REQUEST,
   DELETE_CLIENT_PROJECT_SUCCESS,
   DELETE_CLIENT_PROJECT_FAIL,
@@ -145,11 +141,9 @@ export const {
   UPDATE_CLIENT_PROJECT_SUCCESS,
   UPDATE_CLIENT_PROJECT_FAIL,
 
-
   UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST,
   UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS,
-  UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL
-
+  UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

@@ -5,6 +5,7 @@ import ContactUs from '../pages/site/ContactUs';
 import Faq from '../pages/site/Faq';
 import TermCondition from '../pages/site/TermCondition';
 import Blogs from '../pages/site/blog/blogs';
+import Projects from '../pages/site/Projects';
 
 const siteRoutes = () => ([
     <Route path="/" element={<LandingPage />} key="landing" />,
@@ -13,6 +14,7 @@ const siteRoutes = () => ([
     <Route path="/faq" element={<Faq />} key="faq" />,
     <Route path="/terms" element={<TermCondition />} key="terms" />,
     <Route path="/blogs" element={<Blogs />} key="blogs" />,
+    <Route path="/projects" element={<Projects />} key="projects" />,
 ]);
 
 export default siteRoutes;

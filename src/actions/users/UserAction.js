@@ -40,6 +40,7 @@ export const loginUser = (email, password) => async (dispatch) => {
             "/auth/login",
             { email, password },
         );
+        
         const decoded = decodeToken(data.token);
 
         const tokenExpiry = decoded.exp ? decoded.exp * 1000 : null;

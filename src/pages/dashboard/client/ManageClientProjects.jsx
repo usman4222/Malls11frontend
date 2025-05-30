@@ -23,14 +23,6 @@ import { Badge } from "@/components/SiteComponents/ui/badge";
 import { Card } from "@/components/SiteComponents/ui/card";
 // import { URLS } from "@/config/config";
 import { Link } from "react-router-dom";
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/SiteComponents/ui/select";
 import { Label } from "@/components/SiteComponents/ui/label";
 import { deleteClientProject, getAllClientProjects, updateClientProjectStatus, updateClientProjectVisibility } from "../../../actions/clientActions/projectAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,7 +42,7 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                 .filter(key => !isNaN(Number(key)))
                 .map(key => projectsData[key]);
             setProjects(projectsArray);
-        }
+        }dispatch
     }, [projectsData]);
 
 
