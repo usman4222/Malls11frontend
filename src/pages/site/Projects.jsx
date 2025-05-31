@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 import { getAllProjects } from "../../actions/clientActions/projectAction";
 import { useDispatch, useSelector } from "react-redux";
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
+import SpinnerSquare from "../../components/SiteComponents/LoadingComponent/SpinnerSquare";
 
 
 
@@ -77,12 +78,17 @@ const terms2 = [
 function Projects() {
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 4;
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch()
   const { allProjects } = useSelector((state) => state.allProjects);
 
   useEffect(() => {
-    dispatch(getAllProjects());
+    setLoading(true);
+    dispatch(getAllProjects()).finally(() => {
+      setLoading(false);
+    });
   }, [dispatch]);
+
 
 
   const projectsArray = Object.keys(allProjects)
@@ -232,96 +238,102 @@ function Projects() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-1 w-full gap-5 mt-5">
-                {
-                  projectsArray?.length === 0 ? (
-                    <div className="text-center py-10">No projects found</div>
-                  ) : (
-                    projectsArray?.map((project) => (
-                      <div key={project._id} className="bg-white p-3 shadow-lg border rounded-2xl">
-                        <div className="flex flex-col md:flex-row gap-5 p-5">
-                          <div className="flex flex-col gap-5 md:flex-row flex-grow">
-                            <div className="flex flex-col gap-2 flex-grow">
-                              <div>
-                                <h2 className="text-xl font-semibold">{project.title}</h2>
-                              </div>
-                              <div className="flex flex-col md:flex-row gap-2 py-2 text-gray-500 text-xs">
-                                <div className="bg-blue-700 rounded-full text-white py-1 px-3 w-fit">New</div>
-                                <p className="flex items-center">
-                                  <span>
-                                    {project.project_type === "fixed"
-                                      ? "Fixed"
-                                      : project.project_type === "hourly"
-                                        ? "Hourly"
-                                        : ""}
-                                  </span>
-                                  <span className="ml-2">• Posted {formatRelativeTime(project.createdAt)}</span>
-                                </p>
-                              </div>
-                              <div className="flex flex-col md:flex-row gap-8 md:gap-16 mt-5 md:mt-0">
-                                <div>
-                                  <p className="font-semibold">
-                                    {project.project_type === "fixed"
-                                      ? project.fixed_price != null
-                                        ? `$${Number(project.fixed_price).toFixed(2)}`
-                                        : "Price not available"
-                                      : project.hourly_rate?.min != null && project.hourly_rate?.max != null
-                                        ? `$${project.hourly_rate.min} - $${project.hourly_rate.max}/hr`
-                                        : "Rate not available"}
-                                  </p>
-                                  <p className="text-gray-500 text-sm">
-                                    {project.project_type === "fixed"
-                                      ? "Fixed Price"
-                                      : project.project_type === "hourly"
-                                        ? "Hourly Rate"
-                                        : ""}
-                                  </p>
+              {
+                loading ? (<SpinnerSquare />) : (
+                  <>
+                    <div className="grid grid-cols-1 w-full gap-5 mt-5">
+                      {
+                        projectsArray?.length === 0 ? (
+                          <div className="text-center py-10">No projects found</div>
+                        ) : (
+                          projectsArray?.map((project) => (
+                            <div key={project._id} className="bg-white p-3 shadow-lg border rounded-2xl">
+                              <div className="flex flex-col md:flex-row gap-5 p-5">
+                                <div className="flex flex-col gap-5 md:flex-row flex-grow">
+                                  <div className="flex flex-col gap-2 flex-grow">
+                                    <div>
+                                      <h2 className="text-xl font-semibold">{project.title}</h2>
+                                    </div>
+                                    <div className="flex flex-col md:flex-row gap-2 py-2 text-gray-500 text-xs">
+                                      <div className="bg-blue-700 rounded-full text-white py-1 px-3 w-fit">New</div>
+                                      <p className="flex items-center">
+                                        <span>
+                                          {project.project_type === "fixed"
+                                            ? "Fixed"
+                                            : project.project_type === "hourly"
+                                              ? "Hourly"
+                                              : ""}
+                                        </span>
+                                        <span className="ml-2">• Posted {formatRelativeTime(project.createdAt)}</span>
+                                      </p>
+                                    </div>
+                                    <div className="flex flex-col md:flex-row gap-8 md:gap-16 mt-5 md:mt-0">
+                                      <div>
+                                        <p className="font-semibold">
+                                          {project.project_type === "fixed"
+                                            ? project.fixed_price != null
+                                              ? `$${Number(project.fixed_price).toFixed(2)}`
+                                              : "Price not available"
+                                            : project.hourly_rate?.min != null && project.hourly_rate?.max != null
+                                              ? `$${project.hourly_rate.min} - $${project.hourly_rate.max}/hr`
+                                              : "Rate not available"}
+                                        </p>
+                                        <p className="text-gray-500 text-sm">
+                                          {project.project_type === "fixed"
+                                            ? "Fixed Price"
+                                            : project.project_type === "hourly"
+                                              ? "Hourly Rate"
+                                              : ""}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold capitalize">
+                                          {project.experience === "beginner"
+                                            ? "Beginner"
+                                            : project.experience === "intermediate"
+                                              ? "Intermediate"
+                                              : project.experience === "expert"
+                                                ? "Expert"
+                                                : "Experience not specified"}
+                                        </p>
+                                        <p className="text-gray-500 text-sm">Experience Level</p>
+                                      </div>
+                                    </div>
+                                    <div className="text-gray-900 hidden sm:block mt-5">
+                                      <p>{project.project_des}</p>
+                                    </div>
+                                    <div className="flex gap-2 flex-wrap">
+                                      {Array.isArray(project.skills)
+                                        ? project.skills.map((skill, idx) => (
+                                          <span
+                                            key={idx}
+                                            className="bg-[#E9E9E9] text-gray-500 cursor-pointer mt-3 transition-all ease-in-out hover:text-black w-fit text-sm hover:scale-120 font-medium px-6 py-2 rounded-full"
+                                          >
+                                            {skill}
+                                          </span>
+                                        ))
+                                        : project.category && (
+                                          <span className="bg-primary-custom text-white cursor-pointer mt-3 transition-all ease-in-out hover:text-white w-fit text-sm hover:scale-120 font-medium px-6 py-2 rounded-full">
+                                            {project.category}
+                                          </span>
+                                        )}
+                                    </div>
+                                    <Link className="mt-10" to={`/projects/${project._id}`}>
+                                      <span className="bg-green-600 text-white cursor-pointer mt-3 transition-all ease-in-out hover:text-white w-fit text-sm hover:scale-120 font-medium px-6 py-3 rounded-xl">
+                                        See More
+                                      </span>
+                                    </Link>
+                                  </div>
                                 </div>
-                                <div>
-                                  <p className="font-semibold capitalize">
-                                    {project.experience === "beginner"
-                                      ? "Beginner"
-                                      : project.experience === "intermediate"
-                                        ? "Intermediate"
-                                        : project.experience === "expert"
-                                          ? "Expert"
-                                          : "Experience not specified"}
-                                  </p>
-                                  <p className="text-gray-500 text-sm">Experience Level</p>
-                                </div>
                               </div>
-                              <div className="text-gray-900 hidden sm:block mt-5">
-                                <p>{project.project_des}</p>
-                              </div>
-                              <div className="flex gap-2 flex-wrap">
-                                {Array.isArray(project.skills)
-                                  ? project.skills.map((skill, idx) => (
-                                    <span
-                                      key={idx}
-                                      className="bg-[#E9E9E9] text-gray-500 cursor-pointer mt-3 transition-all ease-in-out hover:text-black w-fit text-sm hover:scale-120 font-medium px-6 py-2 rounded-full"
-                                    >
-                                      {skill}
-                                    </span>
-                                  ))
-                                  : project.category && (
-                                    <span className="bg-primary-custom text-white cursor-pointer mt-3 transition-all ease-in-out hover:text-white w-fit text-sm hover:scale-120 font-medium px-6 py-2 rounded-full">
-                                      {project.category}
-                                    </span>
-                                  )}
-                              </div>
-                              <Link className="mt-10" to={`/projects/${project._id}`}>
-                                <span className="bg-green-600 text-white cursor-pointer mt-3 transition-all ease-in-out hover:text-white w-fit text-sm hover:scale-120 font-medium px-6 py-3 rounded-xl">
-                                  See More
-                                </span>
-                              </Link>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )
-                }
-              </div>
+                          ))
+                        )
+                      }
+                    </div>
+                  </>
+                )
+              }
             </div>
           </SectionWrapper>
         </div>

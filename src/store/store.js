@@ -5,12 +5,14 @@ import storage from 'redux-persist/lib/storage'
 import userSlice from './slices/userSlice'
 import projectSlice from './slices/client/projectSlice'
 import allProjectSlice from './slices/projects/allProjectSlice'
+import freelancerSlice from "./slices/freelancer/allFreelancers"
 
 // Combine reducers
 const rootReducer = combineReducers({
   user: userSlice,
   clientProjects: projectSlice,
-  allProjects: allProjectSlice
+  allProjects: allProjectSlice,
+  allFreelancers: freelancerSlice
 })
 
 // Persist config
