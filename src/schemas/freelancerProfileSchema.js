@@ -3,23 +3,26 @@ import * as z from "zod";
 const freelancerFormSchema = z.object({
   profile_image: z
     .any()
-    .refine(file => file instanceof File || file === "", {
-      message: "Please upload an image file",
-    })
-    .refine(
-      file => !(file instanceof File) || file.size <= 5 * 1024 * 1024,
-      {
-        message: "Image size must be less than 5MB",
-      }
-    )
-    .refine(
-      file =>
-        !(file instanceof File) ||
-        /^image\/(jpeg|png|gif|webp)$/.test(file.type),
-      {
-        message: "Only JPEG, PNG, GIF, or WEBP images are allowed",
-      }
-    ),
+    .optional()  // makes the field optional
+    .refine(file => {
+      // If no file provided (undefined, null, empty string), it's valid
+      if (!file || file === "") return true;
+
+      // Otherwise, must be a File instance
+      if (!(file instanceof File)) return false;
+
+      // Size check (<= 5MB)
+      if (file.size > 5 * 1024 * 1024) return false;
+
+      // Type check (jpeg, png, gif, webp)
+      if (!/^image\/(jpeg|png|gif|webp)$/.test(file.type)) return false;
+
+      return true;
+    }, {
+      message: "Please upload a valid image file (JPEG, PNG, GIF, WEBP) under 5MB",
+    }),
+
+
 
   whatsapp_no: z.string().min(10, "Please enter a valid contact number"),
   gender: z.string().min(1, "Please select your gender"),
@@ -38,12 +41,28 @@ const freelancerFormSchema = z.object({
   facebookUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
   linkedinUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
   twitterUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+  awards: z.array(z.string()).optional(),
 
   hourly_rate: z
     .object({
-      min: z.number().min(0, "Min hourly rate must be at least 0"),
-      max: z.number().min(0, "Max hourly rate must be at least 0"),
+      min: z
+        .string()
+        .min(1, "Minimum hourly rate is required")
+        .transform((val) => parseFloat(val))
+        .refine((val) => !isNaN(val), { message: "Must be a number" }),
+
+      max: z
+        .string()
+        .min(1, "Maximum hourly rate is required")
+        .transform((val) => parseFloat(val))
+        .refine((val) => !isNaN(val), { message: "Must be a number" }),
     })
+    .refine((data) => data.max >= data.min, {
+      message: "Maximum hourly rate must be greater than or equal to minimum hourly rate",
+      path: ["max"],
+    }),
+
+
 
 });
 

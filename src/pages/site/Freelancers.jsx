@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SectionWrapper from "../../components/SiteComponents/SectionWrapper";
 import BreadCrumb2 from "../site/explor/BreadCrumb2";
 import { Input } from "../../components/SiteComponents/ui/input";
-import { HeartIcon, MoveUpRight, Search } from "lucide-react";
+import { CircleUserRound, HeartIcon, MoveUpRight, Search } from "lucide-react";
 import { Checkbox } from "../../components/SiteComponents/ui/checkbox";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,6 @@ const Freelancers = () => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch()
   const { freelancers } = useSelector((state) => state.allFreelancers);
-  console.log("allFreelancers", freelancers);
 
 
   useEffect(() => {
@@ -64,7 +63,7 @@ const Freelancers = () => {
     });
   }, [dispatch]);
 
-  const Datalength = `Showing 1 – 12 of ${dummyData.length} results`;
+  const Datalength = `Showing 1 – 12 of ${freelancers.length} results`;
 
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
@@ -319,11 +318,15 @@ const Freelancers = () => {
                           </button>
 
                           <div className="flex justify-center">
-                            <img
-                              src={item.profile_image}
-                              alt={`${item.name} profile`}
-                              className="w-20 h-20 rounded-full border-2 border-gray-200"
-                            />
+                            {item?.profile_image && item.profile_image !== "" ? (
+                              <img
+                                src={item.profile_image}
+                                alt={`${item.name || "User"} profile`}
+                                className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"
+                              />
+                            ) : (
+                              <CircleUserRound size={60} />
+                            )}
                           </div>
 
                           {/* Profile Details */}

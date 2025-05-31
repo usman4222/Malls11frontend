@@ -51,8 +51,10 @@ export default function FreelancerProfile() {
       gender: "",
       country: "",
       state: "",
-      hourlyRate: 0,
-      maxHourlyRate: 0,
+      hourly_rate: {
+        min: 0,
+        max: 0,
+      },
       role: "",
       website: "",
       categories: "",
@@ -245,7 +247,7 @@ export default function FreelancerProfile() {
                   )} />
                   <InputField
                     control={form.control}
-                    name="hourlyRate"
+                    name="hourly_rate.min"
                     label="Minimum per hour rate*"
                     type="number"
                     placeholder="Enter hourly rate"
@@ -253,7 +255,7 @@ export default function FreelancerProfile() {
                   />
                   <InputField
                     control={form.control}
-                    name="maxHourlyRate"
+                    name="hourly_rate.max"
                     label="Maximum per hour rate*"
                     type="number"
                     placeholder="Enter maximum hourly rate"
