@@ -24,7 +24,7 @@ import { Card } from "@/components/SiteComponents/ui/card";
 // import { URLS } from "@/config/config";
 import { Link } from "react-router-dom";
 import { Label } from "@/components/SiteComponents/ui/label";
-import { deleteClientProject, getAllClientProjects, updateClientProjectStatus, updateClientProjectVisibility } from "../../../actions/clientActions/projectAction";
+import { deleteClientProject, getAllClientProjects, updateClientProjectStatus, updateClientProjectVisibility } from "../../../actions/client/projectAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

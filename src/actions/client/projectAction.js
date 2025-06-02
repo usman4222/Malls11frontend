@@ -1,5 +1,6 @@
 import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS, UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL, UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST, UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS } from "../../store/slices/client/projectSlice";
 import { GET_ALL_PROJECTS_FAIL, GET_ALL_PROJECTS_REQUEST, GET_ALL_PROJECTS_SUCCESS } from "../../store/slices/projects/allProjectSlice";
+import { GET_ALL_CLIENT_PROPOSAL_FAIL, GET_ALL_CLIENT_PROPOSAL_REQUEST, GET_ALL_CLIENT_PROPOSAL_SUCCESS } from "../../store/slices/propsoal/client/proposalSlice";
 import axiosInstance from "../../utils/axiosInstance";
 
 export const createProject = (formData) => async (dispatch) => {
@@ -27,7 +28,6 @@ export const getAllClientProjects = () => async (dispatch) => {
     try {
         dispatch(GET_CLIENT_PROJECTS_REQUEST());
         const { data } = await axiosInstance.get('/project/all-client-projects');
-        console.log("data", data);
 
         dispatch(GET_CLIENT_PROJECTS_SUCCESS(data));
     } catch (error) {
@@ -103,5 +103,23 @@ export const deleteClientProject = (projectId) => async (dispatch) => {
                 error.response?.data?.message || "Failed to update project status"
             )
         );
+    }
+};
+
+
+
+export const getAllClientProposal = () => async (dispatch) => {
+    try {
+        dispatch(GET_ALL_CLIENT_PROPOSAL_REQUEST());
+
+        const { data } = await axiosInstance.get('/project/all-proposals');        
+
+        dispatch(GET_ALL_CLIENT_PROPOSAL_SUCCESS(data.proposals));
+
+        return data.proposals;
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        dispatch(GET_ALL_CLIENT_PROPOSAL_FAIL(error.message || "Failed to fetch projects"));
+        throw error;
     }
 };

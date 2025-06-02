@@ -40,7 +40,6 @@ function FreelancerProposal() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const dispatch = useDispatch();
-  const { user } = useAuth()
   const { freelancerProposals, loading } = useSelector(
     (state) => state.freelancerProposals
   );

@@ -29,7 +29,7 @@ import {
 } from "@/components/SiteComponents/ui/select";
 import { Textarea } from "@/components/SiteComponents/ui/textarea";
 import { SkillsSearch } from "@/components/DashboardComponents/ClientDashboardCompoents/SkillSearch";
-import { createProject } from "../../../actions/clientActions/projectAction";
+import { createProject } from "../../../actions/client/projectAction";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

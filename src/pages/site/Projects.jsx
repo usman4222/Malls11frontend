@@ -22,7 +22,7 @@ import { Slider } from "../../components/SiteComponents/ui/slider";
 import BreadCrumb2 from "../site/explor/BreadCrumb2";
 import SectionWrapper from "../../components/SiteComponents/SectionWrapper";
 import { Link } from "react-router-dom";
-import { getAllProjects } from "../../actions/clientActions/projectAction";
+import { getAllProjects } from "../../actions/client/projectAction";
 import { useDispatch, useSelector } from "react-redux";
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 import SpinnerSquare from "../../components/SiteComponents/LoadingComponent/SpinnerSquare";
