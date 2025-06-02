@@ -1,15 +1,15 @@
 import { Route } from "react-router-dom";
 import DashboardLayout from "../components/DashboardComponents/DashboardLayout";
 import { clientRoutesConfig } from "../config/clientRoutesConfig";
-import { ProtectedRoute } from "./ProtectedRoute";
+import { RoleBaseProtection } from "./protectedRoutes/RoleBaseProtection";
 
 const clientRoutes = () => (
   <Route
     path="/client-dashboard"
     element={
-      <ProtectedRoute allowedRoles={["client"]}>
+      <RoleBaseProtection allowedRoles={["client"]}>
         <DashboardLayout />
-      </ProtectedRoute>
+      </RoleBaseProtection>
     }
     key="dashboard-layout"
   >

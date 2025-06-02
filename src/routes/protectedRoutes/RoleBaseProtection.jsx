@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { checkAuth } from '../utils/authUtils';
+import { checkAuth } from '../../utils/authUtils';
 import { Navigate } from 'react-router-dom';
 
-export const ProtectedRoute = ({ children, allowedRoles }) => {
+export const RoleBaseProtection = ({ children, allowedRoles }) => {
   const { token, tokenExpiry, currentUser } = useSelector((state) => state.user);
 
   const isAuthenticated = token && checkAuth(tokenExpiry);

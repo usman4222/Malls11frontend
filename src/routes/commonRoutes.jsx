@@ -7,6 +7,8 @@ import TermCondition from '../pages/site/TermCondition';
 import Blogs from '../pages/site/blog/blogs';
 import Projects from '../pages/site/Projects';
 import Freelancers from '../pages/site/Freelancers';
+import ProjectDetail from '../pages/site/ProjectDetail';
+import { ProtectedRoute } from './protectedRoutes/protectedRoute';
 
 const siteRoutes = () => ([
     <Route path="/" element={<LandingPage />} key="landing" />,
@@ -17,6 +19,15 @@ const siteRoutes = () => ([
     <Route path="/blogs" element={<Blogs />} key="blogs" />,
     <Route path="/projects" element={<Projects />} key="projects" />,
     <Route path="/frelancers" element={<Freelancers />} key="frelancers" />,
+    <Route
+        path="/projects/project-details/:id"
+        element={
+            <ProtectedRoute>
+                <ProjectDetail />
+            </ProtectedRoute>
+        }
+        key="project-details"
+    />,
 ]);
 
 export default siteRoutes;

@@ -6,7 +6,6 @@ import VerifyForgetEmail from '../pages/site/auth/VerifyForgetEmail';
 import VerifyAccountEmail from '../pages/site/auth/VerifyAccountEmail';
 import ChangePassword from '../pages/site/auth/ChangePassword';
 import ResetPassword from '../pages/site/auth/ResetPassword';
-// import Test from "../pages/site/auth/test"
 
 const authRoutes = () => ([
     <Route path="/login" element={<LoginForm />} key="login" />,
@@ -16,7 +15,6 @@ const authRoutes = () => ([
     <Route path="/forget-password" element={<ForgetPassword />} key="forget-password" />,
     <Route path="/change-password" element={<ChangePassword />} key="change-password" />,
     <Route path="/auth/forget-password/reset-password" element={<ResetPassword />} key="reset-password" />,
-    // <Route path="/test" element={<Test />} key="test" />,
 ]);
 
 export default authRoutes;

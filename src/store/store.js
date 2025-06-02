@@ -6,13 +6,19 @@ import userSlice from './slices/userSlice'
 import projectSlice from './slices/client/projectSlice'
 import allProjectSlice from './slices/projects/allProjectSlice'
 import freelancerSlice from "./slices/freelancer/allFreelancers"
+import singleProjectSlice from "./slices/projects/singleProjectSlice"
+import proposalSlice from "./slices/propsoal/proposalSlice"
+import myProposals from "./slices/propsoal/freelancer/myProposalSlice"
 
 // Combine reducers
 const rootReducer = combineReducers({
   user: userSlice,
   clientProjects: projectSlice,
   allProjects: allProjectSlice,
-  allFreelancers: freelancerSlice
+  singleProject: singleProjectSlice,
+  allFreelancers: freelancerSlice,
+  createProposal: proposalSlice,
+  freelancerProposals: myProposals,
 })
 
 // Persist config

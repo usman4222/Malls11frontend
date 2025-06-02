@@ -82,6 +82,9 @@ function Projects() {
   const dispatch = useDispatch()
   const { allProjects } = useSelector((state) => state.allProjects);
 
+  console.log("allProjects",allProjects);
+  
+
   useEffect(() => {
     setLoading(true);
     dispatch(getAllProjects()).finally(() => {
@@ -89,11 +92,6 @@ function Projects() {
     });
   }, [dispatch]);
 
-
-
-  const projectsArray = Object.keys(allProjects)
-    .filter(key => !isNaN(key))
-    .map(key => allProjects[key]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -243,10 +241,10 @@ function Projects() {
                   <>
                     <div className="grid grid-cols-1 w-full gap-5 mt-5">
                       {
-                        projectsArray?.length === 0 ? (
+                        allProjects?.length === 0 ? (
                           <div className="text-center py-10">No projects found</div>
                         ) : (
-                          projectsArray?.map((project) => (
+                          allProjects?.map((project) => (
                             <div key={project._id} className="bg-white p-3 shadow-lg border rounded-2xl">
                               <div className="flex flex-col md:flex-row gap-5 p-5">
                                 <div className="flex flex-col gap-5 md:flex-row flex-grow">
@@ -318,7 +316,7 @@ function Projects() {
                                           </span>
                                         )}
                                     </div>
-                                    <Link className="mt-10" to={`/projects/${project._id}`}>
+                                    <Link className="mt-10" to={`/projects/project-details/${project._id}`}>
                                       <span className="bg-green-600 text-white cursor-pointer mt-3 transition-all ease-in-out hover:text-white w-fit text-sm hover:scale-120 font-medium px-6 py-3 rounded-xl">
                                         See More
                                       </span>

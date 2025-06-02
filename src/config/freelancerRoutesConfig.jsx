@@ -8,6 +8,7 @@ import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects
 import FavouriteProjects from "../pages/dashboard/freelancer/FavouriteProjects";
 import FreelancerProposal from "../pages/dashboard/freelancer/FreelancerProposal";
 import CreateGig from "../pages/dashboard/freelancer/CreateGig";
+import EditProposalForm from "../pages/dashboard/freelancer/EditProposalForm";
 
 
 export const freelancerRoutesConfig = [
@@ -58,11 +59,15 @@ export const freelancerRoutesConfig = [
         name: "Favourite",
         icon: <VerifiedIcon className="mr-2 h-4 w-4" />,
         component: <FavouriteProjects />,
-    },
+    }, 
     {
         path: "/freelancer-dashboard/delete-profile",
         name: "Delete Profile",
         icon: <UserPen className="mr-2 h-4 w-4" />,
         component: <DeleteProfile />,
+    },
+    {
+        path: "/freelancer-dashboard/freelancer-proposal/editproposal/:id",
+        component: <EditProposalForm />,
     },
 ];

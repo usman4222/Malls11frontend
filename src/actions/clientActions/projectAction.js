@@ -40,11 +40,10 @@ export const getAllProjects = () => async (dispatch) => {
     try {
         dispatch(GET_ALL_PROJECTS_REQUEST());
 
-        const response = await axiosInstance.get('/project/all-projects');
+        const { data } = await axiosInstance.get('/project/all-projects');
 
-        const projects = response.data
 
-        dispatch(GET_ALL_PROJECTS_SUCCESS(projects));
+        dispatch(GET_ALL_PROJECTS_SUCCESS(data.projects));
     } catch (error) {
         console.error("Error fetching projects:", error);
         dispatch(GET_ALL_PROJECTS_FAIL(error.message || "Failed to fetch projects"));

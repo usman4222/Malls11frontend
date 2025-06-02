@@ -1,15 +1,15 @@
 import { Route } from "react-router-dom";
 import DashboardLayout from "../components/DashboardComponents/DashboardLayout";
 import { freelancerRoutesConfig } from "../config/freelancerRoutesConfig";
-import { ProtectedRoute } from "./ProtectedRoute";
+import { RoleBaseProtection } from "./protectedRoutes/RoleBaseProtection";
 
 const freelancerRoutes = () => (
     <Route
         path="/freelancer-dashboard"
         element={
-            <ProtectedRoute allowedRoles={["freelancer"]}>
+            <RoleBaseProtection allowedRoles={["freelancer"]}>
                 <DashboardLayout />
-            </ProtectedRoute>
+            </RoleBaseProtection>
         }
         key="dashboard-layout"
     >

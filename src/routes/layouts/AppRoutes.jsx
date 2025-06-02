@@ -7,8 +7,8 @@ import siteRoutes from "../commonRoutes";
 import clientRoutes from "../clientRoutes";
 import FreelancerLayout from "./FreelancerLayout ";
 import freelancerRoutes from "../freelancerRoutes";
-import { ProtectedRoute } from "../ProtectedRoute";
-import { AuthProtectedRoute } from "./AuthProtectedRoute";
+import { RoleBaseProtection } from "../protectedRoutes/RoleBaseProtection";
+import { AuthProtectedRoute } from "../protectedRoutes/AuthProtectedRoute";
 
 const AppRoutes = () => {
   return (
@@ -30,9 +30,9 @@ const AppRoutes = () => {
       {/* Client Routes */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["client"]}>
+          <RoleBaseProtection allowedRoles={["client"]}>
             <ClientLayout />
-          </ProtectedRoute>
+          </RoleBaseProtection>
         }
       >
         {clientRoutes()}
@@ -41,9 +41,9 @@ const AppRoutes = () => {
       {/* Freelancer Routes */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["freelancer"]}>
+          <RoleBaseProtection allowedRoles={["freelancer"]}>
             <FreelancerLayout />
-          </ProtectedRoute>
+          </RoleBaseProtection>
         }
       >
         {freelancerRoutes()}
