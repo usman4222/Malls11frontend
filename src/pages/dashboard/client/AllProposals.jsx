@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Search,
-  Pencil,
-  Trash2,
   MapPin,
   Calendar,
   Mail,
@@ -35,17 +33,13 @@ import {
 import Dialog from "../../../components/DashboardComponents/Dialoge";
 import { Badge } from "../../../components/SiteComponents/ui/badge";
 import { Card } from "../../../components/SiteComponents/ui/card";
-import { getMyProposals, withdrawFreelancerProposal } from "../../../actions/freelancers/freelancerAction";
 import { useDispatch, useSelector } from "react-redux";
 import { formatRelativeTime } from "../../../utils/formatRelativeTime";
-import { useAuth } from "../../../hooks/useAuth"
 import DashboaordLoading from "../../../components/DashboardComponents/DashboaordLoading";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllClientProposal } from "../../../actions/client/projectAction";
-// import { URLS } from "@/config/config";
-
-
+import { updateProposalStatus } from "../../../actions/proposal/proposalAction";
 
 // Main component for displaying proposals
 const AllProposals = () => {
@@ -64,19 +58,26 @@ const AllProposals = () => {
   const openMalls11Modal = () => setIsMalls11ModalOpen(true);
   const closeMalls11Modal = () => setIsMalls11ModalOpen(false);
 
-  // Handle navigation to Checkout page
-  // Update your render function for the Actions column
-
   const proceedToCheckout = () => {
     console.log("Proceeding to Checkout");
-    closeModal(); // Close the modal after proceeding
+    closeModal();
   };
 
   useEffect(() => {
     dispatch(getAllClientProposal());
   }, [dispatch]);
-  ;
 
+  const handleStatusToggle = async (proposalId, currentStatus) => {
+    const newStatus = currentStatus === "pending" ? "accepted" : "pending";
+
+    try {
+      await dispatch(updateProposalStatus(proposalId, newStatus));
+      await dispatch(getAllClientProposal());
+      toast.success(`Project status updated to ${newStatus}`);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to update status");
+    }
+  };
 
   const filteredProposals = useMemo(() => {
     let filtered = [...(clientProposal || [])];
@@ -125,6 +126,7 @@ const AllProposals = () => {
               className="pl-10"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -200,7 +202,7 @@ const AllProposals = () => {
                       variant={
                         proposal.status?.toLowerCase() === "pending" ? "warning" : "success"
                       }
-                      className="rounded-full"
+                      className="rounded-full border-none"
                     >
                       {proposal.status || "Unknown"}
                     </Badge>
@@ -228,7 +230,9 @@ const AllProposals = () => {
 
                       {/* Envelope Button to send an email */}
                       <button className="p-2 border rounded-md shadow-sm bg-gray-100 hover:bg-gray-200 transition">
-                        <Mail size={18} className="text-gray-700" />
+                        <Link to={`/client-dashboard/all-proposals/view-proposal/${proposal._id}`}>
+                          <Mail size={18} className="text-gray-700" />
+                        </Link>
                       </button>
 
                       {/* Toggle Switch to change public status */}
@@ -236,13 +240,13 @@ const AllProposals = () => {
                         <input
                           type="checkbox"
                           className="sr-only peer"
-                          checked={proposal.status === "accecpt"}
-                          onChange={() => togglePublicStatus(proposal._id)}
+                          checked={proposal.status === "accepted"}
+                          onChange={() => handleStatusToggle(proposal._id, proposal.status)}
+                          disabled={proposal.status === "accepted"}
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                         <span className="ml-3 text-sm font-medium text-gray-900">
-                          {proposal.status === "accecpt" ? "Accepted" : "Pending"}
-                          {/* Display Public/Private status */}
+                          {proposal.status === "accepted" ? "Accepted" : "Pending"}
                         </span>
                       </label>
 

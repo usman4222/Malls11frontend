@@ -5,9 +5,13 @@ const initialState = {
   error: null,
   success: false,
   createdProject: null,
-  clientProjects: [], 
+  clientProjects: [],
   loadingProjects: false,
   errorProjects: null,
+  singleProposal: null,
+  loadingSingleProposal: false,
+  errorSingleProposal: null,
+
 };
 
 const projectSlice = createSlice({
@@ -119,6 +123,25 @@ const projectSlice = createSlice({
       state.success = false;
       state.error = action.payload;
     },
+
+
+    // Get Single Proposal
+    GET_SINGLE_PROPOSAL_REQUEST: (state) => {
+      state.loadingSingleProposal = true;
+      state.errorSingleProposal = null;
+      state.singleProposal = null;
+    },
+    GET_SINGLE_PROPOSAL_SUCCESS: (state, action) => {
+      state.loadingSingleProposal = false;
+      state.singleProposal = action.payload;
+      state.errorSingleProposal = null;
+    },
+    GET_SINGLE_PROPOSAL_FAIL: (state, action) => {
+      state.loadingSingleProposal = false;
+      state.singleProposal = null;
+      state.errorSingleProposal = action.payload;
+    },
+
   },
 });
 
@@ -144,6 +167,11 @@ export const {
   UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST,
   UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS,
   UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL,
+
+  GET_SINGLE_PROPOSAL_REQUEST,
+  GET_SINGLE_PROPOSAL_SUCCESS,
+  GET_SINGLE_PROPOSAL_FAIL,
+
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

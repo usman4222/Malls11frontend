@@ -79,13 +79,15 @@ export const updateClientProjectVisibility = (projectId, newVisibility) => async
     try {
         const { data } = await axiosInstance.patch(`/project/change-project-visibility/${projectId}`, { visibility: newVisibility });
 
-        dispatch(UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS(data.data));
+        dispatch(UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS(data));
+        return data;
     } catch (error) {
         dispatch(
             UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL(
                 error.response?.data?.message || "Failed to update project status"
             )
         );
+        throw error
     }
 };
 
@@ -112,7 +114,7 @@ export const getAllClientProposal = () => async (dispatch) => {
     try {
         dispatch(GET_ALL_CLIENT_PROPOSAL_REQUEST());
 
-        const { data } = await axiosInstance.get('/project/all-proposals');        
+        const { data } = await axiosInstance.get('/project/all-proposals');
 
         dispatch(GET_ALL_CLIENT_PROPOSAL_SUCCESS(data.proposals));
 
@@ -123,3 +125,5 @@ export const getAllClientProposal = () => async (dispatch) => {
         throw error;
     }
 };
+
+

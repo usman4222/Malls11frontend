@@ -3,15 +3,6 @@ import { Search, Pencil, Trash2, MapPin, Grid, Calendar } from "lucide-react";
 import { Button } from "@/components/SiteComponents/ui/button";
 import { Input } from "@/components/SiteComponents/ui/input";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/SiteComponents/ui/dialog";
-import {
     Table,
     TableBody,
     TableCell,
@@ -21,20 +12,22 @@ import {
 } from "@/components/SiteComponents/ui/table";
 import { Badge } from "@/components/SiteComponents/ui/badge";
 import { Card } from "@/components/SiteComponents/ui/card";
-// import { URLS } from "@/config/config";
 import { Link } from "react-router-dom";
 import { Label } from "@/components/SiteComponents/ui/label";
-import { deleteClientProject, getAllClientProjects, updateClientProjectStatus, updateClientProjectVisibility } from "../../../actions/client/projectAction";
+import { deleteClientProject, getAllClientProjects, updateClientProjectVisibility } from "../../../actions/client/projectAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DashboaordLoading from "../../../components/DashboardComponents/DashboaordLoading";
 
-function ManageClientProjects({ type, project, onSave, onCancel }) {
+function ManageClientProjects({ type, project }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [formData, setFormData] = useState(project);
     const dispatch = useDispatch();
     const projectsData = useSelector((state) => state.clientProjects.projects);
     const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         if (projectsData) {
@@ -42,7 +35,7 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                 .filter(key => !isNaN(Number(key)))
                 .map(key => projectsData[key]);
             setProjects(projectsArray);
-        }dispatch
+        } dispatch
     }, [projectsData]);
 
 
@@ -74,12 +67,22 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
         }
     };
 
-
-
     useEffect(() => {
         setFormData(project);
-        dispatch(getAllClientProjects());
+        const fetchProjects = async () => {
+            try {
+                setLoading(true);
+                await dispatch(getAllClientProjects());
+            } catch (error) {
+                toast.error("Failed to fetch projects");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProjects();
     }, [project, dispatch]);
+
 
     const filteredProjects = projects.filter(project =>
         project.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -98,11 +101,14 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                             className="pl-10"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            disabled={loading}
                         />
                     </div>
                 </div>
 
-                {filteredProjects.length > 0 ? (
+                {loading ? (
+                    <DashboaordLoading />
+                ) : filteredProjects.length > 0 ? (
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -176,7 +182,6 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                                                     type="checkbox"
                                                     className="sr-only peer"
                                                     checked={project.visibility === "public"}
-                                                    // checked={project.isPublic}
                                                     onChange={() => handleVisibilityToggle(project._id, project.visibility)}
                                                 />
 
@@ -194,8 +199,7 @@ function ManageClientProjects({ type, project, onSave, onCancel }) {
                                                 className="bg-emerald-500 hover:bg-emerald-600"
                                             >
                                                 <Link
-                                                // to={URLS.FREELANCER.MANAGE_GIGS.MANAGE_GIG_PREVIEW}
-                                                // to={URLS.CLIENT.PROPOSALS}
+                                                    to={"/client-dashboard/all-proposals"}
                                                 >
                                                     View
                                                 </Link>

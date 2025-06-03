@@ -10,6 +10,7 @@ import AllProjects from "@/pages/dashboard/client/AllProjects";
 import ClientServices from "@/pages/dashboard/client/ClientServices";
 import { Cast, FilePlus2, Home, LockKeyholeOpen, SquareChartGantt, Trash2, UserPen, VerifiedIcon, WalletCards, } from "lucide-react";
 import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects";
+import ViewProposal from "../pages/dashboard/client/ViewProposal";
 
 
 export const clientRoutesConfig = [
@@ -54,6 +55,10 @@ export const clientRoutesConfig = [
     name: "All Proposals",
     icon: <SquareChartGantt className="mr-2 h-4 w-4" />,
     component: <AllProposals />,
+  },
+  {
+    path: "/client-dashboard/all-proposals/view-proposal/:id",
+    component: <ViewProposal />,
   },
   {
     path: "/client-dashboard/cient-meetings",
