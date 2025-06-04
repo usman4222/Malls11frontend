@@ -11,6 +11,12 @@ const initialState = {
   singleProposal: null,
   loadingSingleProposal: false,
   errorSingleProposal: null,
+  projectProposals: [],
+  loadingProjectProposals: false,
+  errorProjectProposals: null,
+  singleProject: null,
+  loadingSingleProject: false,
+  errorSingleProject: null,
 
 };
 
@@ -142,6 +148,40 @@ const projectSlice = createSlice({
       state.errorSingleProposal = action.payload;
     },
 
+
+    // Get Single Project
+    GET_SINGLE_PROJECT_REQUEST: (state) => {
+      state.loadingSingleProject = true;
+      state.errorSingleProject = null;
+      state.singleProject = null;
+    },
+    GET_SINGLE_PROJECT_SUCCESS: (state, action) => {
+      state.loadingSingleProject = false;
+      state.singleProject = action.payload;
+      state.errorSingleProject = null;
+    },
+    GET_SINGLE_PROJECT_FAIL: (state, action) => {
+      state.loadingSingleProject = false;
+      state.singleProject = null;
+      state.errorSingleProject = action.payload;
+    },
+
+
+    // Get All Proposals for a Project
+    GET_PROJECT_PROPOSALS_REQUEST: (state) => {
+      state.loadingProjectProposals = true;
+      state.errorProjectProposals = null;
+    },
+    GET_PROJECT_PROPOSALS_SUCCESS: (state, action) => {
+      state.loadingProjectProposals = false;
+      state.projectProposals = action.payload;
+      state.errorProjectProposals = null;
+    },
+    GET_PROJECT_PROPOSALS_FAIL: (state, action) => {
+      state.loadingProjectProposals = false;
+      state.errorProjectProposals = action.payload;
+    },
+
   },
 });
 
@@ -172,6 +212,14 @@ export const {
   GET_SINGLE_PROPOSAL_SUCCESS,
   GET_SINGLE_PROPOSAL_FAIL,
 
+  GET_PROJECT_PROPOSALS_REQUEST,
+  GET_PROJECT_PROPOSALS_SUCCESS,
+  GET_PROJECT_PROPOSALS_FAIL,
+
+  GET_SINGLE_PROJECT_REQUEST,
+  GET_SINGLE_PROJECT_SUCCESS,
+  GET_SINGLE_PROJECT_FAIL
+  
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

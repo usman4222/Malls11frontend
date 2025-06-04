@@ -24,20 +24,9 @@ function ManageClientProjects({ type, project }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [formData, setFormData] = useState(project);
     const dispatch = useDispatch();
-    const projectsData = useSelector((state) => state.clientProjects.projects);
+    const { clientProjects } = useSelector((state) => state.clientProjects || {});
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
-
-
-    useEffect(() => {
-        if (projectsData) {
-            const projectsArray = Object.keys(projectsData)
-                .filter(key => !isNaN(Number(key)))
-                .map(key => projectsData[key]);
-            setProjects(projectsArray);
-        } dispatch
-    }, [projectsData]);
-
 
     const handleVisibilityToggle = (projectId, currentVisibility) => {
         const newVisibility = currentVisibility === "public" ? "private" : "public";
@@ -49,6 +38,7 @@ function ManageClientProjects({ type, project }) {
         );
 
         dispatch(updateClientProjectVisibility(projectId, newVisibility));
+        dispatch(getAllClientProjects());
         toast.success(`Project visibility updated to ${newVisibility}`);
     };
 
@@ -83,11 +73,6 @@ function ManageClientProjects({ type, project }) {
         fetchProjects();
     }, [project, dispatch]);
 
-
-    const filteredProjects = projects.filter(project =>
-        project.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     return (
         <div className="container mx-auto py-10 px-10 bg-[#F0EFEC]">
             <h1 className="text-3xl font-semibold mb-8">Manage {type}</h1>
@@ -108,7 +93,7 @@ function ManageClientProjects({ type, project }) {
 
                 {loading ? (
                     <DashboaordLoading />
-                ) : filteredProjects.length > 0 ? (
+                ) : clientProjects.length > 0 ? (
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -120,7 +105,7 @@ function ManageClientProjects({ type, project }) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredProjects.map((project) => (
+                            {clientProjects.map((project) => (
                                 <TableRow key={project.id}>
                                     <TableCell>
                                         <div className="space-y-1 w-[27rem]">
@@ -194,21 +179,16 @@ function ManageClientProjects({ type, project }) {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
-                                            <Button
-                                                variant="default"
-                                                className="bg-emerald-500 hover:bg-emerald-600"
-                                            >
-                                                <Link
-                                                    to={"/client-dashboard/all-proposals"}
-                                                >
+                                            <Link to={`/client-dashboard/manage-project/project-proposals/${project._id}`}>
+                                                <Button variant="default" className="bg-emerald-500 hover:bg-emerald-600">
                                                     View
-                                                </Link>
-                                            </Button>
-                                            <Button variant="outline">
-                                                <Link >
+                                                </Button>
+                                            </Link>
+                                            <Link to={`/client-dashboard/manage-project/edit-project/${project._id}`} >
+                                                <Button variant="outline">
                                                     <Pencil />
-                                                </Link>
-                                            </Button>
+                                                </Button>
+                                            </Link>
                                             <Button onClick={() => handleDelete(project._id)} variant="outline" size="icon">
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
@@ -224,7 +204,7 @@ function ManageClientProjects({ type, project }) {
                     </div>
                 )}
             </Card>
-        </div>
+        </div >
     );
 }
 

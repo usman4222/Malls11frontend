@@ -59,7 +59,6 @@ const AllProposals = () => {
   const closeMalls11Modal = () => setIsMalls11ModalOpen(false);
 
   const proceedToCheckout = () => {
-    console.log("Proceeding to Checkout");
     closeModal();
   };
 
@@ -229,11 +228,10 @@ const AllProposals = () => {
                       </DropdownMenu>
 
                       {/* Envelope Button to send an email */}
-                      <button className="p-2 border rounded-md shadow-sm bg-gray-100 hover:bg-gray-200 transition">
-                        <Link to={`/client-dashboard/all-proposals/view-proposal/${proposal._id}`}>
-                          <Mail size={18} className="text-gray-700" />
-                        </Link>
-                      </button>
+
+                      <Link className="p-2 border rounded-md shadow-sm bg-gray-100 hover:bg-gray-200 transition" to={`/client-dashboard/all-proposals/view-proposal/${proposal._id}`}>
+                        <Mail size={18} className="text-gray-700" />
+                      </Link>
 
                       {/* Toggle Switch to change public status */}
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -254,9 +252,9 @@ const AllProposals = () => {
                       <Dialog
                         isOpen={isModalOpen}
                         title="Disclaimer"
-                        disclaimerType="danger" // Set disclaimer type to danger
-                        onClose={closeModal} // Pass closeModal function to close dialog
-                        onProceed={proceedToCheckout} // Pass proceedToCheckout function to navigate to checkout
+                        disclaimerType="danger"
+                        onClose={closeModal}
+                        onProceed={proceedToCheckout}
                       >
                         By proceeding, you acknowledge that you are hiring on your own
                         behalf. Malls11 is not responsible for any payments or the

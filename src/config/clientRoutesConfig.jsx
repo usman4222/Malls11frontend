@@ -11,6 +11,8 @@ import ClientServices from "@/pages/dashboard/client/ClientServices";
 import { Cast, FilePlus2, Home, LockKeyholeOpen, SquareChartGantt, Trash2, UserPen, VerifiedIcon, WalletCards, } from "lucide-react";
 import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects";
 import ViewProposal from "../pages/dashboard/client/ViewProposal";
+import ClientProjectProposals from "../pages/dashboard/client/ClientProjectProposals";
+import EditClientProject from "../pages/dashboard/client/EditClientProject";
 
 
 export const clientRoutesConfig = [
@@ -57,10 +59,6 @@ export const clientRoutesConfig = [
     component: <AllProposals />,
   },
   {
-    path: "/client-dashboard/all-proposals/view-proposal/:id",
-    component: <ViewProposal />,
-  },
-  {
     path: "/client-dashboard/cient-meetings",
     name: "Cient Meetings",
     icon: <Cast className="mr-2 h-4 w-4" />,
@@ -83,5 +81,20 @@ export const clientRoutesConfig = [
     name: "Delete Profile",
     icon: <Trash2 className="mr-2 h-4 w-4" />,
     component: <DeleteProfile />,
+  },
+  {
+    path: "/client-dashboard/all-proposals/view-proposal/:id",
+    component: <ViewProposal />,
+    showInSidebar: false,
+  },
+  {
+    path: "/client-dashboard/manage-project/project-proposals/:id",
+    component: <ClientProjectProposals />,
+    showInSidebar: false,
+  },
+  {
+    path: "/client-dashboard/manage-project/edit-project/:id",
+    component: <EditClientProject />,
+    showInSidebar: false,
   },
 ];

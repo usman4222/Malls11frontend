@@ -1,4 +1,4 @@
-import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS, UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL, UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST, UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS } from "../../store/slices/client/projectSlice";
+import { CREATE_PROJECT_FAIL, CREATE_PROJECT_REQUEST, CREATE_PROJECT_SUCCESS, DELETE_CLIENT_PROJECT_FAIL, DELETE_CLIENT_PROJECT_REQUEST, DELETE_CLIENT_PROJECT_SUCCESS, GET_CLIENT_PROJECTS_FAIL, GET_CLIENT_PROJECTS_REQUEST, GET_CLIENT_PROJECTS_SUCCESS, GET_PROJECT_PROPOSALS_FAIL, GET_PROJECT_PROPOSALS_REQUEST, GET_PROJECT_PROPOSALS_SUCCESS, GET_SINGLE_PROJECT_FAIL, GET_SINGLE_PROJECT_REQUEST, GET_SINGLE_PROJECT_SUCCESS, UPDATE_CLIENT_PROJECT_FAIL, UPDATE_CLIENT_PROJECT_REQUEST, UPDATE_CLIENT_PROJECT_SUCCESS, UPDATE_CLIENT_PROJECT_VISIBILITY_FAIL, UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST, UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS } from "../../store/slices/client/projectSlice";
 import { GET_ALL_PROJECTS_FAIL, GET_ALL_PROJECTS_REQUEST, GET_ALL_PROJECTS_SUCCESS } from "../../store/slices/projects/allProjectSlice";
 import { GET_ALL_CLIENT_PROPOSAL_FAIL, GET_ALL_CLIENT_PROPOSAL_REQUEST, GET_ALL_CLIENT_PROPOSAL_SUCCESS } from "../../store/slices/propsoal/client/proposalSlice";
 import axiosInstance from "../../utils/axiosInstance";
@@ -29,9 +29,30 @@ export const getAllClientProjects = () => async (dispatch) => {
         dispatch(GET_CLIENT_PROJECTS_REQUEST());
         const { data } = await axiosInstance.get('/project/all-client-projects');
 
-        dispatch(GET_CLIENT_PROJECTS_SUCCESS(data));
+        dispatch(GET_CLIENT_PROJECTS_SUCCESS(data.projects));
+
+        return data.projects;
     } catch (error) {
         dispatch(GET_CLIENT_PROJECTS_FAIL(error.message || "Failed to fetch projects"));
+
+        throw error
+    }
+};
+
+
+
+export const getAllProjectProposals = (projectId) => async (dispatch) => {
+    try {
+        dispatch(GET_PROJECT_PROPOSALS_REQUEST());
+
+        const { data } = await axiosInstance.get(`/project/all-project-proposals/${projectId}`);
+
+        dispatch(GET_PROJECT_PROPOSALS_SUCCESS(data.proposals));
+
+        return data.projects;
+    } catch (error) {
+        dispatch(GET_PROJECT_PROPOSALS_FAIL(error.message || "Failed to fetch projects"));
+        throw error;
     }
 };
 
@@ -52,7 +73,20 @@ export const getAllProjects = () => async (dispatch) => {
 
 
 
+export const getSingleProject = (proposalId) => async (dispatch) => {
+    try {
+        dispatch(GET_SINGLE_PROJECT_REQUEST());
 
+        const { data } = await axiosInstance.get(`/project/single-project/${proposalId}`);
+
+        dispatch(GET_SINGLE_PROJECT_SUCCESS(data.project));
+
+        return data.project;
+    } catch (error) {
+        dispatch(GET_SINGLE_PROJECT_FAIL(error.response?.data?.message || error.message));
+        throw error;
+    }
+};
 
 
 export const updateClientProjectStatus = (projectId, newStatus) => async (dispatch) => {
