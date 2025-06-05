@@ -10,6 +10,7 @@ import FreelancerProposal from "../pages/dashboard/freelancer/FreelancerProposal
 import CreateGig from "../pages/dashboard/freelancer/CreateGig";
 import EditProposalForm from "../pages/dashboard/freelancer/EditProposalForm";
 import ManageGigs from "../pages/dashboard/freelancer/ManageGigs";
+import GigPreview from "../pages/dashboard/freelancer/GigPreview";
 
 
 export const freelancerRoutesConfig = [
@@ -30,6 +31,12 @@ export const freelancerRoutesConfig = [
         name: "Manage Gigs",
         icon: <FilePlus2 className="mr-2 h-4 w-4" />,
         component: <ManageGigs />,
+    },
+    {
+        path: "/freelancer-dashboard/preview-gigs/:id",
+        name: "Gig Preview",
+        icon: <FilePlus2 className="mr-2 h-4 w-4" />,
+        component: <GigPreview />,
     },
     {
         path: "/freelancer-dashboard/verify-freelancer",
@@ -60,7 +67,7 @@ export const freelancerRoutesConfig = [
         name: "Favourite",
         icon: <VerifiedIcon className="mr-2 h-4 w-4" />,
         component: <FavouriteProjects />,
-    }, 
+    },
     {
         path: "/freelancer-dashboard/delete-profile",
         name: "Delete Profile",
