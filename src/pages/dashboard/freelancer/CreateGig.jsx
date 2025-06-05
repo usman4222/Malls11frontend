@@ -1,18 +1,18 @@
-import { useState } from 'react'
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "../../../components/SiteComponents/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/SiteComponents/ui/card"
-import { Input } from "../../../components/SiteComponents/ui/input"
-import { Textarea } from "../../../components/SiteComponents/ui/textarea"
+import { useEffect, useState } from 'react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/SiteComponents/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/SiteComponents/ui/card";
+import { Input } from "@/components/SiteComponents/ui/input";
+import { Textarea } from "@/components/SiteComponents/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/SiteComponents/ui/select"
+} from "@/components/SiteComponents/ui/select";
 import {
   Form,
   FormControl,
@@ -20,39 +20,40 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/SiteComponents/ui/form"
-
-import { X, Plus } from 'lucide-react'
+} from "@/components/SiteComponents/ui/form";
+import { X, Plus } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { createGig } from '@/actions/gig/gigAction';
+import { useAuth } from '@/hooks/useAuth';
+import { useDispatch } from 'react-redux';
 
 
 const packageSchema = z.object({
   title: z.string().min(1, "Package title is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  deliveryTime: z.string().min(1, "Delivery time is required"),
+  delivery_time: z.string().min(1, "Delivery time is required"),
   revisions: z.string().min(1, "Number of revisions is required"),
   price: z.number().min(1, "Price must be greater than 0"),
   features: z.array(z.string()).min(1, "At least one feature is required")
-})
+});
 
 const serviceFormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   category: z.string().min(1, "Please select a category"),
-  responseTime: z.string().min(1, "Response time is required"),
-  englishLevel: z.string().min(1, "English level is required"),
+  response_time: z.string().min(1, "Response time is required"),
+  english_level: z.string().min(1, "English level is required"),
   description: z.string().min(50, "Description must be at least 50 characters"),
   basicPackage: packageSchema,
   standardPackage: packageSchema,
   premiumPackage: packageSchema,
-  location: z.string().min(1, "Location is required"),
-  serviceArea: z.string().min(1, "Service area is required"),
+  // location: z.string().min(1, "Location is required"),
+  // serviceArea: z.string().min(1, "Service area is required"),
   coordinates: z.object({
     lat: z.number(),
     lng: z.number()
   })
-})
-
+});
 
 function PackageTier({
   title,
@@ -60,15 +61,15 @@ function PackageTier({
   control,
   defaultFeatures = [""]
 }) {
-  const [features, setFeatures] = useState(defaultFeatures)
+  const [features, setFeatures] = useState(defaultFeatures);
 
   const addFeature = () => {
-    setFeatures([...features, ""])
-  }
+    setFeatures([...features, ""]);
+  };
 
   const removeFeature = (index) => {
-    setFeatures(features.filter((_, i) => i !== index))
-  }
+    setFeatures(features.filter((_, i) => i !== index));
+  };
 
   return (
     <Card className="flex-1">
@@ -107,7 +108,7 @@ function PackageTier({
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={control}
-            name={`${type}.deliveryTime`}
+            name={`${type}.delivery_time`}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Delivery Time</FormLabel>
@@ -163,8 +164,8 @@ function PackageTier({
             <FormItem>
               <FormLabel>Price ($)</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
+                <Input
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
@@ -214,22 +215,28 @@ function PackageTier({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export default function CreateGig() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [file, setFile] = useState(null);
+  const dispatch = useDispatch();
+  const { token } = useAuth();
+
   const form = useForm({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       title: "",
       category: "",
-      responseTime: "",
-      englishLevel: "",
+      response_time: "",
+      english_level: "",
       description: "",
       basicPackage: {
         title: "",
         description: "",
-        deliveryTime: "",
+        delivery_time: "",
         revisions: "",
         price: 0,
         features: [""]
@@ -237,7 +244,7 @@ export default function CreateGig() {
       standardPackage: {
         title: "",
         description: "",
-        deliveryTime: "",
+        delivery_time: "",
         revisions: "",
         price: 0,
         features: [""]
@@ -245,38 +252,87 @@ export default function CreateGig() {
       premiumPackage: {
         title: "",
         description: "",
-        deliveryTime: "",
+        delivery_time: "",
         revisions: "",
         price: 0,
         features: [""]
       },
-      location: "",
-      serviceArea: "",
+      // location: "",
+      // serviceArea: "",
       coordinates: { lat: 0, lng: 0 }
     }
-  })
+  });
 
-  async function onSubmit(data) {
+
+  useEffect(() => {
+    console.log("Form errors:", form.formState.errors);
+  }, [form.formState.errors]);
+
+  const onSubmit = async (formData) => {
     try {
-      console.log(data)
-      toast({
-        title: "Service posted",
-        description: "Your service has been successfully posted.",
-      })
+      setIsLoading(true);
+
+      const payload = {
+        ...formData,
+        packages: [
+          formData.basicPackage,
+          formData.standardPackage,
+          formData.premiumPackage,
+        ],
+      };
+
+      await dispatch(createGig(payload, token))
+      toast.success("Gig created successfully!");
+
+      form.reset({
+        title: "",
+        category: "",
+        response_time: "",
+        english_level: "",
+        description: "",
+        basicPackage: {
+          title: "",
+          description: "",
+          delivery_time: "",
+          revisions: "",
+          price: 0,
+          features: [""],
+        },
+        standardPackage: {
+          title: "",
+          description: "",
+          delivery_time: "",
+          revisions: "",
+          price: 0,
+          features: [""],
+        },
+        premiumPackage: {
+          title: "",
+          description: "",
+          delivery_time: "",
+          revisions: "",
+          price: 0,
+          features: [""],
+        },
+        coordinates: { lat: 0, lng: 0 },
+      });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      })
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Gig creation failed. Please try again.";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-[#F0EFEC] h-full p-10">
+      <ToastContainer />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
- 
           <Card>
             <CardHeader>
               <CardTitle>General</CardTitle>
@@ -322,7 +378,7 @@ export default function CreateGig() {
 
                 <FormField
                   control={form.control}
-                  name="responseTime"
+                  name="response_time"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Response Time*</FormLabel>
@@ -345,7 +401,7 @@ export default function CreateGig() {
 
                 <FormField
                   control={form.control}
-                  name="englishLevel"
+                  name="english_level"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>English Level*</FormLabel>
@@ -413,15 +469,16 @@ export default function CreateGig() {
             </CardContent>
           </Card>
 
-       
-
           <div className="flex justify-end gap-4">
-            <Button variant="outline">Cancel</Button>
-            <Button type="submit">Post Service</Button>
+            <Button variant="outline" type="button">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading || imageUploading}>
+              {isLoading ? "Creating..." : "Post Service"}
+            </Button>
           </div>
         </form>
       </Form>
     </div>
-  )
+  );
 }
-

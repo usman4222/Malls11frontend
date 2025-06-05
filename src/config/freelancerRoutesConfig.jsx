@@ -4,11 +4,12 @@ import FreelancerProfile from "@/pages/dashboard/freelancer/FreelancerProfile";
 import ChangePassword from "@/pages/dashboard/client/ChangePassoword";
 import DeleteProfile from "@/pages/dashboard/client/DeleteProfile";
 import VerifyClient from "@/pages/dashboard/client/VerifyClient";
-import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects";
+// import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects";
 import FavouriteProjects from "../pages/dashboard/freelancer/FavouriteProjects";
 import FreelancerProposal from "../pages/dashboard/freelancer/FreelancerProposal";
 import CreateGig from "../pages/dashboard/freelancer/CreateGig";
 import EditProposalForm from "../pages/dashboard/freelancer/EditProposalForm";
+import ManageGigs from "../pages/dashboard/freelancer/ManageGigs";
 
 
 export const freelancerRoutesConfig = [
@@ -28,7 +29,7 @@ export const freelancerRoutesConfig = [
         path: "/freelancer-dashboard/manage-gigs",
         name: "Manage Gigs",
         icon: <FilePlus2 className="mr-2 h-4 w-4" />,
-        component: <ManageClientProjects />,
+        component: <ManageGigs />,
     },
     {
         path: "/freelancer-dashboard/verify-freelancer",
