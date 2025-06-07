@@ -9,6 +9,7 @@ import Projects from '../pages/site/Projects';
 import Freelancers from '../pages/site/Freelancers';
 import ProjectDetail from '../pages/site/ProjectDetail';
 import { ProtectedRoute } from './protectedRoutes/protectedRoute';
+import FreelancerProfile from '../pages/site/FreelancerProfile';
 
 const siteRoutes = () => ([
     <Route path="/" element={<LandingPage />} key="landing" />,
@@ -27,6 +28,15 @@ const siteRoutes = () => ([
             </ProtectedRoute>
         }
         key="project-details"
+    />,
+    <Route
+        path="/frelancers/frelancer-details/:id"
+        element={
+            <ProtectedRoute>
+                <FreelancerProfile />
+            </ProtectedRoute>
+        }
+        key="frelancer-details"
     />,
 ]);
 
