@@ -134,7 +134,7 @@ export default function GigPreview() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           <div className="lg:col-span-2 space-y-8">
-              <h2 className="text-2xl font-semibold mb-4">{gig.title}</h2>
+            <h2 className="text-2xl font-semibold mb-4">{gig.title}</h2>
             <div className="relative aspect-video bg-background rounded-lg overflow-hidden ">
               <Swiper
                 spaceBetween={10}
@@ -155,7 +155,6 @@ export default function GigPreview() {
                 ))}
               </Swiper>
             </div>
-
 
             <Swiper
               onSwiper={setThumbsSwiper}
