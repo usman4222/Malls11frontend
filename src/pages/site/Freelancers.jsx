@@ -31,6 +31,7 @@ import ExploreCard from "../../components/SiteComponents/exploreCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllFreelancers } from "../../actions/freelancers/freelancerAction";
 import SpinnerSquare from "../../components/SiteComponents/LoadingComponent/SpinnerSquare";
+import { Link } from "react-router-dom";
 
 const frameworks = [
   {
@@ -55,6 +56,8 @@ const Freelancers = () => {
   const dispatch = useDispatch()
   const { freelancers } = useSelector((state) => state.allFreelancers);
 
+
+  console.log("freelancers", freelancers);
 
   useEffect(() => {
     setLoading(true);
@@ -354,10 +357,13 @@ const Freelancers = () => {
                           </div>
 
                           {/* View Profile Button */}
-                          <Button className="mt-4 py-6 w-full bg-green-100 duration-500 text-[#00cc6a]  rounded group-hover:bg-[#00cc6a] group-hover:text-white transition-all">
-                            View Profile
-                            <MoveUpRight />
-                          </Button>
+
+                          <Link to={`/frelancers/frelancer-details/${item.id}`}>
+                            <Button className="mt-4 py-6 w-full cursor-pointer bg-green-100 duration-500 text-[#00cc6a]  rounded group-hover:bg-[#00cc6a] group-hover:text-white transition-all">
+                              View Profile
+                              <MoveUpRight />
+                            </Button>
+                          </Link>
                         </div>
                       ))}
                     </div>
