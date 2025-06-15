@@ -1,6 +1,10 @@
 import { Star, Clock, MapPin, Calendar, Truck, RotateCcw, Check, ChevronDown, Info, Ban } from "lucide-react"
 import { useState } from "react";
 import * as Tooltip from '@radix-ui/react-tooltip';
+import FreelancerGigs from "../../components/SiteComponents/FreelancerGigs";
+import FreelancerPortfolio from "../../components/SiteComponents/FreelancerPortfolio";
+import FreelancerFaq from "../../components/SiteComponents/FreelancerFaq";
+import FreelancerReviews from "../../components/SiteComponents/FreelancerReviews";
 
 const packages = {
     basic: {
@@ -280,6 +284,10 @@ export default function FreelancerProfile() {
                     </div>
                 </div>
             </div>
+            <FreelancerPortfolio />
+            <FreelancerFaq/>
+            <FreelancerReviews/>
+            <FreelancerGigs />
         </div>
     )
 }
