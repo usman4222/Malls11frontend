@@ -21,13 +21,13 @@ export function Sidebar({ className }) {
   };
 
   return (
-    <div className={cn("flex flex-col h-full bg-white border-r", className)}>
+    <div className={cn("flex flex-col bg-white border-r", className)}>
       <ToastContainer />
       <div className="flex items-center justify-center p-4 border-b">
         <img src="/path-to-your-logo.png" alt="Logo" className="h-10 w-auto" />
       </div>
       {user?.currentUser?.role?.includes("client") ? (
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-2 p-4 w-52">
           {clientRoutesConfig.map(({ path, name, icon }) => (
             <NavItem
               key={path}
@@ -40,7 +40,7 @@ export function Sidebar({ className }) {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-2 p-4 w-56">
           {freelancerRoutesConfig.map(({ path, name, icon }) => (
             <NavItem
               key={path}

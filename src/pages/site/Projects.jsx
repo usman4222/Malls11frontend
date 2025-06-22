@@ -82,8 +82,8 @@ function Projects() {
   const dispatch = useDispatch()
   const { allProjects } = useSelector((state) => state.allProjects);
 
-  console.log("allProjects",allProjects);
-  
+  console.log("allProjects", allProjects);
+
 
   useEffect(() => {
     setLoading(true);
@@ -262,7 +262,9 @@ function Projects() {
                                               ? "Hourly"
                                               : ""}
                                         </span>
-                                        <span className="ml-2">• Posted {formatRelativeTime(project.createdAt)}</span>
+                                        <span className="ml-2">
+                                          • Posted {project.createdAt ? formatRelativeTime(project.createdAt) : 'some time ago'}
+                                        </span>
                                       </p>
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-8 md:gap-16 mt-5 md:mt-0">

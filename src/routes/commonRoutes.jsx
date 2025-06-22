@@ -8,7 +8,7 @@ import Blogs from '../pages/site/blog/blogs';
 import Projects from '../pages/site/Projects';
 import Freelancers from '../pages/site/Freelancers';
 import ProjectDetail from '../pages/site/ProjectDetail';
-// import { ProtectedRoute } from './protectedRoutes/protectedRoute';
+import { ProtectedRoute } from './protectedRoutes/protectedRoute';
 import FreelancerProfile from '../pages/site/FreelancerProfile';
 
 const siteRoutes = () => ([
@@ -23,18 +23,18 @@ const siteRoutes = () => ([
     <Route
         path="/projects/project-details/:id"
         element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
                 <ProjectDetail />
-            // </ProtectedRoute>
+            </ProtectedRoute>
         }
         key="project-details"
     />,
     <Route
         path="/frelancers/frelancer-details/:id"
         element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
                 <FreelancerProfile />
-            // </ProtectedRoute>
+            </ProtectedRoute>
         }
         key="frelancer-details"
     />,

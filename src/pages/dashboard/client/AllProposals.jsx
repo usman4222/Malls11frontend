@@ -113,7 +113,7 @@ const AllProposals = () => {
   }, [clientProposal, searchQuery, sortBy])
 
   return (
-    <div className="container mx-auto py-10 px-10 bg-[#F0EFEC] h-[100vh]">
+    <div className="container mx-auto py-10 px-10 bg-[#F0EFEC]">
       <h1 className="text-3xl font-semibold mb-8">Manage Proposals</h1>
 
       <Card className="p-6">

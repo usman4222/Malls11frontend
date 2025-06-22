@@ -29,9 +29,9 @@ import Pagination1 from "../../components/SiteComponents/Pagination1";
 import { Separator } from "../../components/SiteComponents/ui/separator";
 import ExploreCard from "../../components/SiteComponents/exploreCard";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllFreelancers } from "../../actions/freelancers/freelancerAction";
 import SpinnerSquare from "../../components/SiteComponents/LoadingComponent/SpinnerSquare";
 import { Link } from "react-router-dom";
+import { getAllFreelancers } from "../../actions/freelancers/freelancerAction";
 
 const frameworks = [
   {
@@ -54,19 +54,17 @@ const Freelancers = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch()
-  const { freelancers } = useSelector((state) => state.allFreelancers);
-
-
-  console.log("freelancers", freelancers);
+  const { freelancers = [] } = useSelector((state) => state.allFreelancers);
 
   useEffect(() => {
     setLoading(true);
-    dispatch(getAllFreelancers()).finally(() => {
+    dispatch(getAllFreelancers())
+    .finally(() => {
       setLoading(false);
     });
   }, [dispatch]);
 
-  const Datalength = `Showing 1 – 12 of ${freelancers.length} results`;
+  const Datalength = `Showing 1 – 12 of ${freelancers?.length ?? 0} results`;
 
   const toggleFavorite = (id) => {
     setFavorites((prev) =>

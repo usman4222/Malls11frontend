@@ -12,7 +12,7 @@ const useAutoLogout = () => {
     if (!token) return;
 
     if (isTokenExpired(tokenExpiry)) {
-      dispatch({ type: LOGOUT_SUCCESS });
+      dispatch(LOGOUT_SUCCESS());
     } else {
       setupAutoLogout(tokenExpiry, dispatch);
     }

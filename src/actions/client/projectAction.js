@@ -111,7 +111,7 @@ export const updateClientProjectVisibility = (projectId, newVisibility) => async
     dispatch(UPDATE_CLIENT_PROJECT_VISIBILITY_REQUEST());
 
     try {
-        const { data } = await axiosInstance.patch(`/project/change-project-visibility/${projectId}`, { visibility: newVisibility });
+        const { data } = await axiosInstance.patch(`/project/update-project-visibility/${projectId}`, { visibility: newVisibility });
 
         dispatch(UPDATE_CLIENT_PROJECT_VISIBILITY_SUCCESS(data));
         return data;
@@ -141,7 +141,6 @@ export const deleteClientProject = (projectId) => async (dispatch) => {
         );
     }
 };
-
 
 
 export const getAllClientProposal = () => async (dispatch) => {

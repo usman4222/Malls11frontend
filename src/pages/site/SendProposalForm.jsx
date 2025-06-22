@@ -79,7 +79,7 @@ const SendProposalForm = ({ project }) => {
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Estimated Hours</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Estimated Time</label>
                             <input
                                 type="number"
                                 value={duration}

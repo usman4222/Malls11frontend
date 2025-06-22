@@ -8,12 +8,14 @@ export const getAllFreelancers = () => async (dispatch) => {
     try {
         dispatch(GET_ALL_FREELANCERS_REQUEST());
 
-        const response = await axiosInstance.get('/profile/get-all-freelancers');
+        const { data } = await axiosInstance.get('/profile/get-all-freelancers');
 
-        dispatch(GET_ALL_FREELANCERS_SUCCESS(response.data.users));
+        dispatch(GET_ALL_FREELANCERS_SUCCESS(data.freelancers));
+
+        return data.freelancers;
     } catch (error) {
-        console.error("Error fetching Freelancers:", error);
         dispatch(GET_ALL_FREELANCERS_FAIL(error.message || "Failed to fetch Freelancers"));
+        throw error;
     }
 };
 

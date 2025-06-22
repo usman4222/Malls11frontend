@@ -37,7 +37,7 @@ const faqData = [
 ]
 
 export default function FreelancerFaq() {
-  const [expandedItems, setExpandedItems] = useState([3]) // Default to having item 3 expanded
+  const [expandedItems, setExpandedItems] = useState([]) 
 
   const toggleItem = (id) => {
     setExpandedItems((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
