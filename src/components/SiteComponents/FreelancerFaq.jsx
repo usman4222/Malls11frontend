@@ -1,47 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
-
-const faqData = [
-  {
-    id: 1,
-    question: "What do you need to start working?",
-    answer:
-      "To get started, I'll need a clear brief about your project requirements, any existing brand materials (logos, colors, fonts), content for the website, and access to your hosting/domain if you have one. We'll also discuss your timeline and budget during our initial consultation.",
-  },
-  {
-    id: 2,
-    question: "Will all pages be responsive and mobile-friendly?",
-    answer:
-      "All websites I create are fully responsive and optimized for mobile devices. I ensure your site looks great and functions perfectly on desktops, tablets, and smartphones. Mobile-first design is a standard part of my development process.",
-  },
-  {
-    id: 3,
-    question: "Can you customize or redesign an existing website?",
-    answer:
-      "Yes, I will redesign, customize, or fix errors in an existing website also according to your requirements.",
-  },
-  {
-    id: 4,
-    question: "How long does it take to complete a project?",
-    answer:
-      "Project timelines vary depending on complexity and scope. A simple landing page typically takes 3-7 days, while a full website with multiple pages and custom features can take 2-4 weeks. I'll provide you with a detailed timeline during our project discussion.",
-  },
-  {
-    id: 5,
-    question: "Do you provide ongoing support and maintenance?",
-    answer:
-      "Yes, I offer ongoing support and maintenance services. This includes regular updates, security monitoring, backup management, and technical support. I provide different maintenance packages to suit various needs and budgets.",
-  },
-]
+import { useDispatch, useSelector } from "react-redux"
+import { getUserProfile } from "../../actions/profile/profileAction"
+import { useParams } from "react-router-dom"
 
 export default function FreelancerFaq() {
-  const [expandedItems, setExpandedItems] = useState([]) 
+  const [expandedItems, setExpandedItems] = useState([])
+  const dispatch = useDispatch()
+  const { id } = useParams();
+  const { viewedUser } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getUserProfile(id));
+    }
+  }, [dispatch, id]);
+
 
   const toggleItem = (id) => {
-    setExpandedItems((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+    setExpandedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    )
   }
+
+  // Use user faqs if available, otherwise fallback
+  const faqData = Array.isArray(viewedUser?.faqs) && viewedUser.faqs.length > 0
+    ? viewedUser.faqs.map((faq, index) => ({
+      id: index + 1,
+      question: faq.question || `Question ${index + 1}`,
+      answer: faq.answer || `No answer provided.`,
+    }))
+    : "No FAQs available at the moment."
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">

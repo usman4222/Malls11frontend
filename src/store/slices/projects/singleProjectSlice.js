@@ -15,6 +15,7 @@ const singleProjectSlice = createSlice({
             state.error = null;
         },
         GET_PROJECT_SUCCESS: (state, action) => {
+            console.log("Single Project Data:", action.payload);
             state.loading = false;
             state.project = action.payload;
         },

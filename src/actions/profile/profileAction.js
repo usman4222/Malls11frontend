@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CLIENT_VERIFICATION_FAIL, CLIENT_VERIFICATION_REQUEST, CLIENT_VERIFICATION_SUCCESS, COMPLETE_PROFILE_FAIL, COMPLETE_PROFILE_REQUEST, COMPLETE_PROFILE_SUCCESS, DELETE_PROFILE_FAIL, DELETE_PROFILE_REQUEST, DELETE_PROFILE_SUCCESS, GET_PROFILE_FAIL, GET_PROFILE_REQUEST, GET_PROFILE_SUCCESS, LOGOUT_FAIL, LOGOUT_SUCCESS, UPDATE_PROFILE_FAIL, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS } from "../../store/slices/userSlice";
+import { CLIENT_VERIFICATION_FAIL, CLIENT_VERIFICATION_REQUEST, CLIENT_VERIFICATION_SUCCESS, COMPLETE_PROFILE_FAIL, COMPLETE_PROFILE_REQUEST, COMPLETE_PROFILE_SUCCESS, DELETE_PROFILE_FAIL, DELETE_PROFILE_REQUEST, DELETE_PROFILE_SUCCESS, GET_MY_PROFILE_FAIL, GET_MY_PROFILE_REQUEST, GET_MY_PROFILE_SUCCESS, GET_USER_PROFILE_FAIL, GET_USER_PROFILE_REQUEST, GET_USER_PROFILE_SUCCESS, LOGOUT_FAIL, LOGOUT_SUCCESS, UPDATE_PROFILE_FAIL, UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS } from "../../store/slices/userSlice";
 import axiosInstance from "../../utils/axiosInstance";
 
 
@@ -56,22 +56,37 @@ export const verifyClient = (verificationData, token) => async (dispatch) => {
 
 
 
-export const fetchUserProfile = (token) => async (dispatch, getState) => {
+export const getMyProfile = () => async (dispatch) => {
     try {
-        dispatch(GET_PROFILE_REQUEST());
+        dispatch(GET_MY_PROFILE_REQUEST());
 
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
+        const res = await axiosInstance.get(`/profile/get-my-profile`);
 
-        const res = await axios.get(`${baseurl}/profile/get-user-profile`, config);
+        dispatch(GET_MY_PROFILE_SUCCESS(res.data.user));
 
-        dispatch(GET_PROFILE_SUCCESS(res.data.user));
+        return res.data.user;
+
     } catch (error) {
-        dispatch(GET_PROFILE_FAIL(error.response?.data?.message || error.message));
+        dispatch(GET_MY_PROFILE_FAIL(error.response?.data?.message || error.message));
+
+        throw error;
     }
+};
+
+
+export const getUserProfile = (id) => async (dispatch) => {
+  try {
+    dispatch(GET_USER_PROFILE_REQUEST());
+
+    const res = await axiosInstance.get(`/profile/get-user-profile/${id}`);
+
+    dispatch(GET_USER_PROFILE_SUCCESS(res.data.user));
+
+    return res.data.user;
+  } catch (error) {
+    dispatch(GET_USER_PROFILE_FAIL(error.response?.data?.message || error.message));
+    throw error;
+  }
 };
 
 

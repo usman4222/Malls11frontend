@@ -28,6 +28,7 @@ export default function GigPreview() {
   const { gig } = useSelector((state) => state.gigs);
 
   console.log("gig", gig);
+  console.log("id", id);
 
 
   useEffect(() => {

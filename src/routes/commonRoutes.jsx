@@ -23,9 +23,9 @@ const siteRoutes = () => ([
     <Route
         path="/projects/project-details/:id"
         element={
-            <ProtectedRoute>
+            // <ProtectedRoute>
                 <ProjectDetail />
-            </ProtectedRoute>
+            // </ProtectedRoute>
         }
         key="project-details"
     />,

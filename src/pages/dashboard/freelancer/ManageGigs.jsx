@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DashboaordLoading from "../../../components/DashboardComponents/DashboaordLoading";
-import { deleteGig, getAllFreelancerGigs } from "../../../actions/gig/gigAction";
+import { deleteGig, getMyGigs } from "../../../actions/gig/gigAction";
 
 function ManageGigs({ type, project }) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -45,7 +45,7 @@ function ManageGigs({ type, project }) {
             dispatch(deleteGig(gigId))
                 .then(() => {
                     toast.success("Gig deleted successfully!");
-                    dispatch(getAllFreelancerGigs());
+                    dispatch(getMyGigs());
                 })
                 .catch((error) => {
                     toast.error("Failed to delete the gig");
@@ -55,7 +55,7 @@ function ManageGigs({ type, project }) {
     };
 
     useEffect(() => {
-        dispatch(getAllFreelancerGigs());
+        dispatch(getMyGigs());
     }, []);
 
     return (

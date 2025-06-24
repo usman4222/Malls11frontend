@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: null,
+  viewedUser: null,
   token: null,
   error: null,
   loading: false,
@@ -69,20 +70,37 @@ const userSlice = createSlice({
 
 
     // ✅ Get user profile actions
-    GET_PROFILE_REQUEST: (state) => {
+    GET_MY_PROFILE_REQUEST: (state) => {
       state.loading = true;
       state.error = null;
     },
-    GET_PROFILE_SUCCESS: (state, action) => {
+    GET_MY_PROFILE_SUCCESS: (state, action) => {
+      console.log("Get Profile Success payload:", action.payload);
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
     },
-    GET_PROFILE_FAIL: (state, action) => {
+    GET_MY_PROFILE_FAIL: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
 
+
+    // Get any user profile actions
+    GET_USER_PROFILE_REQUEST: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    GET_USER_PROFILE_SUCCESS: (state, action) => {
+      // You may want to store this in a different state key if needed
+      state.viewedUser = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    GET_USER_PROFILE_FAIL: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
 
     // ✅ Update profile actions
     UPDATE_PROFILE_REQUEST: (state) => {
@@ -169,15 +187,18 @@ export const {
   COMPLETE_PROFILE_REQUEST,
   COMPLETE_PROFILE_SUCCESS,
   COMPLETE_PROFILE_FAIL,
-  GET_PROFILE_REQUEST,
-  GET_PROFILE_SUCCESS,
-  GET_PROFILE_FAIL,
+  GET_MY_PROFILE_REQUEST,
+  GET_MY_PROFILE_SUCCESS,
+  GET_MY_PROFILE_FAIL,
   UPDATE_PROFILE_REQUEST,
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAIL,
   DELETE_PROFILE_REQUEST,
   DELETE_PROFILE_SUCCESS,
   DELETE_PROFILE_FAIL,
+  GET_USER_PROFILE_REQUEST,
+  GET_USER_PROFILE_SUCCESS,
+  GET_USER_PROFILE_FAIL,
   CLIENT_VERIFICATION_REQUEST,
   CLIENT_VERIFICATION_SUCCESS,
   CLIENT_VERIFICATION_FAIL,

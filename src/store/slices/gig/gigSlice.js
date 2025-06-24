@@ -8,6 +8,10 @@ const initialState = {
     creatingGig: false,
     createdGig: null,
     errorCreateGig: null,
+
+    gig: null,
+    loading: false,
+    error: null
 };
 
 const gigSlice = createSlice({
@@ -15,19 +19,36 @@ const gigSlice = createSlice({
     initialState,
     reducers: {
         // Get All Gigs
-        GET_ALL_FREELANCER_GIGS_REQUEST: (state) => {
+        GET_MY_GIGS_REQUEST: (state) => {
             state.loadingGigs = true;
             state.errorGigs = null;
         },
-        GET_ALL_FREELANCER_GIGS_SUCCESS: (state, action) => {
+        GET_MY_GIGS_SUCCESS: (state, action) => {
             state.loadingGigs = false;
             state.gigs = action.payload;
             state.errorGigs = null;
         },
-        GET_ALL_FREELANCER_GIGS_FAIL: (state, action) => {
+        GET_MY_GIGS_FAIL: (state, action) => {
             state.loadingGigs = false;
             state.errorGigs = action.payload;
         },
+
+
+        // Get User Gigs
+        GET_USER_GIGS_REQUEST: (state) => {
+            state.loadingGigs = true;
+            state.errorGigs = null;
+        },
+        GET_USER_GIGS_SUCCESS: (state, action) => {
+            state.loadingGigs = false;
+            state.gigs = action.payload;
+            state.errorGigs = null;
+        },
+        GET_USER_GIGS_FAIL: (state, action) => {
+            state.loadingGigs = false;
+            state.errorGigs = action.payload;
+        },
+
 
         // Create Gig
         CREATE_GIG_REQUEST: (state) => {
@@ -51,6 +72,7 @@ const gigSlice = createSlice({
             state.error = null;
         },
         GET_GIG_SUCCESS: (state, action) => {
+            console.log("Gig Data:", action.payload);
             state.loading = false;
             state.gig = action.payload;
         },
@@ -80,10 +102,9 @@ const gigSlice = createSlice({
 });
 
 export const {
-    GET_ALL_FREELANCER_GIGS_REQUEST,
-    GET_ALL_FREELANCER_GIGS_SUCCESS,
-    GET_ALL_FREELANCER_GIGS_FAIL,
-
+    GET_MY_GIGS_REQUEST,
+    GET_MY_GIGS_SUCCESS,
+    GET_MY_GIGS_FAIL,
 
     CREATE_GIG_REQUEST,
     CREATE_GIG_SUCCESS,
@@ -93,6 +114,9 @@ export const {
     GET_GIG_SUCCESS,
     GET_GIG_FAIL,
 
+    GET_USER_GIGS_REQUEST,
+    GET_USER_GIGS_SUCCESS,
+    GET_USER_GIGS_FAIL,
 
     DELETE_GIG_REQUEST,
     DELETE_GIG_SUCCESS,

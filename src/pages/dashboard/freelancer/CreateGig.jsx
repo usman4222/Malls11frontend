@@ -147,7 +147,7 @@ function PackageTier({
                       <SelectItem value="1">1 Revision</SelectItem>
                       <SelectItem value="2">2 Revisions</SelectItem>
                       <SelectItem value="3">3 Revisions</SelectItem>
-                      <SelectItem value="unlimited">Unlimited</SelectItem>
+                      <SelectItem value="Unlimited">Unlimited</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>

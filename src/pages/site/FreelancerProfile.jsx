@@ -1,10 +1,13 @@
 import { Star, Clock, MapPin, Calendar, Truck, RotateCcw, Check, ChevronDown, Info, Ban } from "lucide-react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Tooltip from '@radix-ui/react-tooltip';
 import FreelancerGigs from "../../components/SiteComponents/FreelancerGigs";
 import FreelancerPortfolio from "../../components/SiteComponents/FreelancerPortfolio";
 import FreelancerFaq from "../../components/SiteComponents/FreelancerFaq";
 import FreelancerReviews from "../../components/SiteComponents/FreelancerReviews";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../actions/profile/profileAction";
+import { useParams } from "react-router-dom";
 
 const packages = {
     basic: {
@@ -56,8 +59,18 @@ const packages = {
 
 export default function FreelancerProfile() {
 
-
+    const { id } = useParams();
     const [selected, setSelected] = useState("basic");
+    const dispatch = useDispatch();
+    const { viewedUser } = useSelector((state) => state.user);
+
+
+    useEffect(() => {
+        if (id) {
+            dispatch(getUserProfile(id));
+        }
+    }, [dispatch, id]);
+
 
     const data = packages[selected];
 
@@ -74,18 +87,18 @@ export default function FreelancerProfile() {
                                 <div className="flex-shrink-0">
                                     <div className="relative">
                                         <img
-                                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face"
-                                            alt="Mohammad Sanjid"
+                                            src={viewedUser?.profile_image || "https://via.placeholder.com/80"}
+                                            alt={viewedUser?.username || "User Avatar"}
                                             width={80}
                                             height={80}
-                                            className="rounded-full object-cover"
+                                            className="rounded-full object-cover border"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="flex-1 space-y-3">
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                        <h1 className="text-xl font-semibold text-gray-900">Mohammad Sanjid</h1>
+                                        <h1 className="text-xl font-semibold text-gray-900">{viewedUser?.fullName}</h1>
                                         <div className="flex items-center gap-2">
                                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white">
                                                 Admin's Choice
@@ -138,7 +151,7 @@ export default function FreelancerProfile() {
                                         <MapPin className="w-4 h-4 text-gray-500" />
                                         <div>
                                             <p className="text-sm text-gray-500">From</p>
-                                            <p className="font-medium">Bangladesh</p>
+                                            <p className="font-medium">{viewedUser?.country}</p>
                                         </div>
                                     </div>
 
@@ -150,29 +163,29 @@ export default function FreelancerProfile() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3">
+                                    {/* <div className="flex items-center gap-3">
                                         <div className="w-4 h-4 text-gray-500 flex items-center justify-center">🌐</div>
                                         <div>
                                             <p className="text-sm text-gray-500">Languages</p>
                                             <p className="font-medium">Bengali, English</p>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-3">
                                         <Calendar className="w-4 h-4 text-gray-500" />
                                         <div>
-                                            <p className="text-sm text-gray-500">Member since</p>
-                                            <p className="font-medium">Dec 2023</p>
+                                            <p className="text-sm text-gray-500">Sate</p>
+                                            <p className="font-medium">{viewedUser?.state}</p>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center gap-3">
                                         <Truck className="w-4 h-4 text-gray-500" />
                                         <div>
-                                            <p className="text-sm text-gray-500">Last delivery</p>
-                                            <p className="font-medium">1 day</p>
+                                            <p className="text-sm text-gray-500">Gender</p>
+                                            <p className="font-medium">{viewedUser?.gender}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -183,14 +196,7 @@ export default function FreelancerProfile() {
                         <div className="bg-white rounded-lg shadow-sm border p-6">
                             <div className="prose max-w-none">
                                 <p className="text-gray-700 leading-relaxed">
-                                    Greetings, I'm a skilled full stack developer passionate about translating ideas into compelling
-                                    digital experiences. With over 4 years of practical experience, I've honed my abilities to provide
-                                    exceptional Web and Mobile application solutions that suit your requirements. My Expertise are
-                                    includes- PHP, HTML5, CSS3, JavaScript, flutter, Dart, etc. Are you eager to enhance your startup or
-                                    existing business? Drop me a message anytime! Reach out, and let's discuss how we can improve your
-                                    online presence together.
-
-                                    Greetings, I'm a skilled full stack developer passionate about translating ideas into compelling digital experiences. With over 4 years of practical experience, I've honed my abilities to provide exceptional Web and Mobile application solutions that suit your requirements. My Expertise are includes- PHP, HTML5, CSS3, JavaScript, flutter, Dart, etc. Are you eager to enhance your startup or existing business? Drop me a message anytime! Reach out, and let's discuss how we can improve your online presence together.
+                                    {viewedUser?.profile_description || "I am a passionate web developer with over 5 years of experience in creating stunning and functional websites. My goal is to help businesses establish a strong online presence and achieve their digital marketing objectives. I specialize in HTML, CSS, JavaScript, and various web development frameworks."}
                                 </p>
                             </div>
                         </div>
@@ -284,9 +290,9 @@ export default function FreelancerProfile() {
                     </div>
                 </div>
             </div>
-            <FreelancerPortfolio />
-            <FreelancerFaq/>
-            <FreelancerReviews/>
+            {/* <FreelancerPortfolio /> */}
+            <FreelancerFaq />
+            {/* <FreelancerReviews /> */}
             <FreelancerGigs />
         </div>
     )

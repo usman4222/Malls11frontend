@@ -4,7 +4,9 @@ import { useParams } from 'react-router-dom';
 import ExploreCard from '../../components/SiteComponents/exploreCard';
 import SectionWrapper from '../../components/SiteComponents/SectionWrapper';
 import BreadCrumb2 from '../site/explor/BreadCrumb2';
-import { getSingleProject } from '../../actions/projects/projectAction';
+// import { getSingleProject } from '../../actions/projects/projectAction';
+// import { getSingleProject } from "../../store/slices/projects/singleProjectSlice";
+
 import SpinnerSquare from '../../components/SiteComponents/LoadingComponent/SpinnerSquare';
 import { BarChart3, Clock, DollarSign, ExternalLink, Languages, MapPin, ThumbsUp, User } from 'lucide-react';
 import { Button } from '../../components/SiteComponents/ui/button';
@@ -15,19 +17,27 @@ import {
     CardTitle,
 } from "../../components/SiteComponents/ui/card";
 import SendProposalForm from './SendProposalForm';
+import { getSingleProject } from '../../actions/projects/projectAction';
 
 const ProjectDetail = () => {
+    console.log("🟢 ProjectDetail component mounted");
+
     const { id } = useParams();
     const dispatch = useDispatch();
+    const { singleProject: project, loadingSingleProject: loading } = useSelector((state) => state.allProjects);
 
-    const { project, loading } = useSelector((state) => state.singleProject);
-
-    console.log("project details", project);
-
+    console.log("Project Detail Page - Project Data:", project);
+    console.log("ID:", id);
 
     useEffect(() => {
-        dispatch(getSingleProject(id));
+        console.log("🟢 useEffect triggered");
+        if (id) {
+            console.log("🚀 Dispatching getSingleProject with ID:", id);
+            dispatch(getSingleProject(id));
+        }
     }, [dispatch, id]);
+
+
 
     return (
         <div className="mt-16 flex gap-5 flex-col">

@@ -143,7 +143,7 @@ function FreelancerProposal() {
                 <TableRow key={proposal._id}>
                   <TableCell>
                     <div className="space-y-1 w-[27rem]">
-                      <p className="text-xl font-[500]">{proposal.project_id?.title || "No Title"}</p>
+                      <p className="text-xl font-[500]">{proposal?.cover_letter || "No Title"}</p>
                       <div className="flex gap-3 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />

@@ -1,5 +1,5 @@
 import axiosInstance from "../../utils/axiosInstance";
-import { CREATE_GIG_FAIL, CREATE_GIG_REQUEST, CREATE_GIG_SUCCESS, DELETE_GIG_FAIL, DELETE_GIG_REQUEST, DELETE_GIG_SUCCESS, GET_ALL_FREELANCER_GIGS_FAIL, GET_ALL_FREELANCER_GIGS_REQUEST, GET_ALL_FREELANCER_GIGS_SUCCESS, GET_GIG_FAIL, GET_GIG_REQUEST, GET_GIG_SUCCESS } from "../../store/slices/gig/gigSlice";
+import { CREATE_GIG_FAIL, CREATE_GIG_REQUEST, CREATE_GIG_SUCCESS, DELETE_GIG_FAIL, DELETE_GIG_REQUEST, DELETE_GIG_SUCCESS, GET_MY_GIGS_FAIL, GET_MY_GIGS_REQUEST, GET_MY_GIGS_SUCCESS, GET_GIG_FAIL, GET_GIG_REQUEST, GET_GIG_SUCCESS, GET_USER_GIGS_REQUEST, GET_USER_GIGS_SUCCESS, GET_USER_GIGS_FAIL } from "../../store/slices/gig/gigSlice";
 
 
 export const createGig = (formData) => async (dispatch) => {
@@ -23,28 +23,50 @@ export const createGig = (formData) => async (dispatch) => {
 
 
 
-export const getAllFreelancerGigs = () => async (dispatch) => {
+export const getMyGigs = () => async (dispatch) => {
     try {
-        dispatch(GET_ALL_FREELANCER_GIGS_REQUEST());
+        dispatch(GET_MY_GIGS_REQUEST());
         const { data } = await axiosInstance.get('/gig/my-gigs');
 
-        dispatch(GET_ALL_FREELANCER_GIGS_SUCCESS(data.gigs));
+        dispatch(GET_MY_GIGS_SUCCESS(data.gigs));
 
         return data.gigs;
     } catch (error) {
-        dispatch(GET_ALL_FREELANCER_GIGS_FAIL(error.message || "Failed to fetch projects"));
+        dispatch(GET_MY_GIGS_FAIL(error.message || "Failed to fetch projects"));
 
         throw error
     }
 };
 
-export const getSingleGig = (gigId) => async (dispatch) => {
+export const getUserGigs = (id) => async (dispatch) => {
+    try {
+        dispatch(GET_USER_GIGS_REQUEST());
+        const { data } = await axiosInstance.get(`/gig/user-gigs/${id}`);
+
+        console.log("User Gigs Data:", data);
+
+        dispatch(GET_USER_GIGS_SUCCESS(data.gigs));
+        console.log("User Gigs:", data.gigs);
+
+        return data.gigs;
+    } catch (error) {
+        dispatch(GET_USER_GIGS_FAIL(error.message || "Failed to fetch projects"));
+
+        throw error
+    }
+};
+
+export const getSingleGig = (id) => async (dispatch) => {
     try {
         dispatch(GET_GIG_REQUEST());
 
-        const { data } = await axiosInstance.get(`/gig/get-single-gig/${gigId}`);
+        const { data } = await axiosInstance.get(`/gig/get-single-gig/${id}`);
+
+        console.log("Single Data Gig:", data);
 
         dispatch(GET_GIG_SUCCESS(data.gig));
+
+        console.log("Single Gig.Data:", data.gig);
 
         return data.gig;
     } catch (error) {
