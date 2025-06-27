@@ -44,6 +44,7 @@ function FreelancerProposal() {
     (state) => state.freelancerProposals
   );
 
+  console.log("freelancerProposals", freelancerProposals);
   useEffect(() => {
     dispatch(getMyProposals());
   }, [dispatch]);
@@ -143,16 +144,18 @@ function FreelancerProposal() {
                 <TableRow key={proposal._id}>
                   <TableCell>
                     <div className="space-y-1 w-[27rem]">
-                      <p className="text-xl font-[500]">{proposal?.cover_letter || "No Title"}</p>
+                      <p className="text-xl font-[500]">
+                        {(proposal?.cover_letter?.split(" ").slice(0, 50).join(" ") || "No Title") + (proposal?.cover_letter?.split(" ").length > 50 ? "..." : "")}
+                      </p>
                       <div className="flex gap-3 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
+                        {/* <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           {proposal.project_id?.location || "Unknown location"}
-                        </div>
+                        </div> */}
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {proposal.createdAt
-                            ? formatRelativeTime(proposal.createdAt)
+                          {proposal?.submitted_at
+                            ? formatRelativeTime(proposal?.submitted_at)
                             : "Unknown date"}
                         </div>
                       </div>
@@ -191,9 +194,11 @@ function FreelancerProposal() {
 
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="icon">
-                        <Mail className="h-4 w-4" />
-                      </Button>
+                      <Link to={`/freelancer-dashboard/freelancer-proposal/view-proposal/${proposal._id}`}>
+                        <Button variant="outline" size="icon" >
+                          <Mail className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Link to={`/freelancer-dashboard/freelancer-proposal/editproposal/${proposal._id}`}>
                         <Button variant="outline" size="icon">
                           <Pencil className="h-4 w-4" />

@@ -14,19 +14,44 @@ import 'swiper/css/pagination'
 import 'swiper/css/thumbs'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSingleGig } from '../../../actions/gig/gigAction'
-import axios from 'axios'
+import { changeGigStatus, getSingleGig } from '../../../actions/gig/gigAction'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function GigPreview() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   const { id } = useParams();
   const dispatch = useDispatch();
 
   const { gig } = useSelector((state) => state.gigs)
+  const { currentUser } = useSelector((state) => state.user);
+  const [selectedStatus, setSelectedStatus] = useState(gig?.status || "Draft");
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
-  console.log("Gig Data:", gig);
+  const handleStatusUpdate = async (newStatus) => {
+    const prevStatus = selectedStatus;
+    setSelectedStatus(newStatus);
+    setStatusDropdownOpen(false);
+
+    try {
+      await dispatch(changeGigStatus(gig._id, newStatus));
+      toast.success(`Gig status updated to ${newStatus}`);
+      dispatch(getSingleGig(id));
+    } catch (error) {
+      setSelectedStatus(prevStatus);
+      toast.error("Failed to update gig status.");
+    }
+  };
+
+
+  useEffect(() => {
+    if (gig?.status) {
+      setSelectedStatus(gig.status);
+    }
+  }, [gig]);
+
 
   useEffect(() => {
     if (id) {
@@ -35,57 +60,6 @@ export default function GigPreview() {
   }, [dispatch, id]);
 
 
-
-  // const gigData = {
-  //   title: "UI/UX",
-  //   price: 500.0,
-  //   deliveryTime: "3 Days Delivery",
-  //   revisions: "2 Revisions",
-  //   images: [
-  //     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/abcdefgh.jpg-zxcSDfgaoQuny6slX4JzwEJAP5wDyv.jpeg",
-  //     "/placeholder.svg?height=400&width=600",
-  //   ],
-  //   description: "Professional UI/UX Design Services",
-  //   seller: {
-  //     name: "John Doe",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     rating: 4.9,
-  //     reviews: 150
-  //   },
-  //   relatedServices: [
-  //     {
-  //       id: 1,
-  //       title: "I will design logos and banners",
-  //       price: 50.0,
-  //       image: "/placeholder.svg?height=200&width=300",
-  //       seller: {
-  //         name: "Jane Smith",
-  //         avatar: "/placeholder.svg?height=40&width=40"
-  //       }
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "Social media post design",
-  //       price: 35.0,
-  //       image: "/placeholder.svg?height=200&width=300",
-  //       seller: {
-  //         name: "Mike Johnson",
-  //         avatar: "/placeholder.svg?height=40&width=40"
-  //       }
-  //     },
-  //     {
-  //       id: 3,
-  //       title: "Logo design and company logo",
-  //       price: 100.0,
-  //       image: "/placeholder.svg?height=200&width=300",
-  //       seller: {
-  //         name: "Sarah Wilson",
-  //         avatar: "/placeholder.svg?height=40&width=40"
-  //       }
-  //     }
-  //   ]
-  // }
-
   const handleSubmitForReview = async () => {
     setIsSubmitting(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
@@ -93,8 +67,8 @@ export default function GigPreview() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-
+    <div className="pb-48 bg-gray-50">
+      <ToastContainer />
       <div className="bg-background border-b sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center bg-white">
           <div className="flex items-center gap-4">
@@ -132,7 +106,6 @@ export default function GigPreview() {
 
       <main className="container mx-auto pr-4 pl-14 py-8 ">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
           <div className="lg:col-span-2 space-y-8">
             <h2 className="text-2xl font-semibold mb-4">{gig.title}</h2>
             <div className="relative aspect-video bg-background rounded-lg overflow-hidden ">
@@ -144,15 +117,15 @@ export default function GigPreview() {
                 modules={[Navigation, Pagination, Thumbs]}
                 className="h-full w-full border rounded-2xl overflow-hidden"
               >
-                {/* {gigData.images.map((image, index) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      src={image}
-                      alt={`Gig image ${index + 1}`}
-                      className="object-cover w-full h-full"
-                    />
-                  </SwiperSlide>
-                ))} */}
+
+                <SwiperSlide>
+                  <img
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/abcdefgh.jpg-zxcSDfgaoQuny6slX4JzwEJAP5wDyv.jpeg"
+                    alt={`Gig image`}
+                    className="object-cover w-full h-full"
+                  />
+                </SwiperSlide>
+
               </Swiper>
             </div>
 
@@ -165,17 +138,15 @@ export default function GigPreview() {
               modules={[Thumbs]}
               className="h-24"
             >
-              {/* {gigData.images.map((image, index) => (
-                <SwiperSlide key={index}>
-                  <div className="relative h-full w-full rounded-md overflow-hidden border cursor-pointer">
-                    <img
-                      src={image}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="object-cover w-full h-full "
-                    />
-                  </div>
-                </SwiperSlide>
-              ))} */}
+              <SwiperSlide>
+                <div className="relative h-full w-full rounded-md overflow-hidden border cursor-pointer">
+                  <img
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/abcdefgh.jpg-zxcSDfgaoQuny6slX4JzwEJAP5wDyv.jpeg"
+                    alt={`Thumbnail`}
+                    className="object-cover w-full h-full "
+                  />
+                </div>
+              </SwiperSlide>
             </Swiper>
 
 
@@ -196,15 +167,15 @@ export default function GigPreview() {
               <TabsContent value="about" className="mt-4">
                 <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
-                    {/* <AvatarImage src={gigData.seller.avatar} />
-                    <AvatarFallback>{gigData.seller.name[0]}</AvatarFallback> */}
+                    <AvatarImage src={currentUser?.profile_image} />
+                    {/* <AvatarFallback>{gigData.seller.name[0]}</AvatarFallback> */}
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold">{gigData.seller.name}</h3>
+                    <h3 className="font-semibold">{currentUser?.username}</h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      {/* <span>{gigData.seller.rating}</span>
-                      <span>({gigData.seller.reviews} reviews)</span> */}
+                      <span>0</span>
+                      <span>No reviews</span>
                     </div>
                   </div>
                 </div>
@@ -288,6 +259,51 @@ export default function GigPreview() {
           </div> */}
         </div>
       </main>
+      <div className="container flex items-center justify-between mx-auto px-4 pb-10">
+        <div className="relative inline-block text-left">
+          <button
+            onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
+            className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Update Status: {selectedStatus}
+            <svg
+              className="-mr-1 ml-2 h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {statusDropdownOpen && (
+            <div className="origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+              <div className="py-1">
+                {["Draft", "Active", "Paused"]
+                  .filter((status) => status !== gig.status)
+                  .map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => handleStatusUpdate(status)}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      {status}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div>
+          <h3 className='font-bold'>Gig Status: <span className='font-semibold'>{gig?.status}</span></h3>
+        </div>
+      </div>
+
     </div>
   )
 }

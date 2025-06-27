@@ -81,6 +81,29 @@ const gigSlice = createSlice({
         },
 
 
+        // Update Gig Status
+        CHANGE_GIG_STATUS_REQUEST: (state) => {
+            state.loading = true;
+            state.error = null;
+            state.success = false;
+        },
+        CHANGE_GIG_STATUS_SUCCESS: (state, action) => {
+            state.loading = false;
+            state.success = true;
+            const updatedGig = action.payload;
+            state.gigs = state.gigs.map((g) =>
+                g._id === updatedGig._id ? updatedGig : g
+            );
+            state.error = null;
+        },
+        CHANGE_GIG_STATUS_FAIL: (state, action) => {
+            state.loading = false;
+            state.success = false;
+            state.error = action.payload;
+        },
+
+
+
         // Delete Gig
         DELETE_GIG_REQUEST: (state) => {
             state.loadingGigs = true;
@@ -116,6 +139,11 @@ export const {
     GET_USER_GIGS_REQUEST,
     GET_USER_GIGS_SUCCESS,
     GET_USER_GIGS_FAIL,
+
+    CHANGE_GIG_STATUS_REQUEST,
+    CHANGE_GIG_STATUS_SUCCESS,
+    CHANGE_GIG_STATUS_FAIL,
+
 
     DELETE_GIG_REQUEST,
     DELETE_GIG_SUCCESS,

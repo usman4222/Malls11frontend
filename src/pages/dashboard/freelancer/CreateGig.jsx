@@ -44,6 +44,12 @@ const serviceFormSchema = z.object({
   response_time: z.string().min(1, "Response time is required"),
   english_level: z.string().min(1, "English level is required"),
   description: z.string().min(50, "Description must be at least 50 characters"),
+  min_hourly_rate: z
+    .number({ required_error: "Min hourly rate is required" })
+    .min(1, "Min hourly rate must be at least $1"),
+  max_hourly_rate: z
+    .number({ required_error: "Max hourly rate is required" })
+    .min(1, "Max hourly rate must be at least $1"),
   basicPackage: packageSchema,
   standardPackage: packageSchema,
   premiumPackage: packageSchema,
@@ -230,6 +236,8 @@ export default function CreateGig() {
       response_time: "",
       english_level: "",
       description: "",
+      min_hourly_rate: 0,
+      max_hourly_rate: 0,
       basicPackage: {
         title: "",
         description: "",
@@ -405,6 +413,46 @@ export default function CreateGig() {
                   )}
                 />
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="min_hourly_rate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Min Hourly Rate ($)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          placeholder="e.g. 10"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="max_hourly_rate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Max Hourly Rate ($)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          placeholder="e.g. 50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
 
               <FormField
                 control={form.control}

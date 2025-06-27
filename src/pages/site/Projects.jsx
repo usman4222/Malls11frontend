@@ -256,9 +256,9 @@ function Projects() {
                                       <div className="bg-blue-700 rounded-full text-white py-1 px-3 w-fit">New</div>
                                       <p className="flex items-center">
                                         <span>
-                                          {project.project_type === "fixed"
+                                          {project.project_type === "Fixed"
                                             ? "Fixed"
-                                            : project.project_type === "hourly"
+                                            : project.project_type === "Hourly"
                                               ? "Hourly"
                                               : ""}
                                         </span>
@@ -270,7 +270,7 @@ function Projects() {
                                     <div className="flex flex-col md:flex-row gap-8 md:gap-16 mt-5 md:mt-0">
                                       <div>
                                         <p className="font-semibold">
-                                          {project.project_type === "fixed"
+                                          {project.project_type === "Fixed"
                                             ? project.fixed_price != null
                                               ? `$${Number(project.fixed_price).toFixed(2)}`
                                               : "Price not available"
@@ -279,20 +279,20 @@ function Projects() {
                                               : "Rate not available"}
                                         </p>
                                         <p className="text-gray-500 text-sm">
-                                          {project.project_type === "fixed"
+                                          {project.project_type === "Fixed"
                                             ? "Fixed Price"
-                                            : project.project_type === "hourly"
+                                            : project.project_type === "Hourly"
                                               ? "Hourly Rate"
                                               : ""}
                                         </p>
                                       </div>
                                       <div>
                                         <p className="font-semibold capitalize">
-                                          {project.experience === "beginner"
+                                          {project.experience === "Beginner"
                                             ? "Beginner"
-                                            : project.experience === "intermediate"
+                                            : project.experience === "Intermediate"
                                               ? "Intermediate"
-                                              : project.experience === "expert"
+                                              : project.experience === "Expert"
                                                 ? "Expert"
                                                 : "Experience not specified"}
                                         </p>

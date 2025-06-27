@@ -6,7 +6,7 @@ import { createProposal } from "../../actions/proposal/proposalAction";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SendProposalForm = ({ project }) => {
+const SendProposalForm = ({ singleProject }) => {
     const dispatch = useDispatch();
     const { loading, success, error } = useSelector((state) => state.createProposal);
 
@@ -19,10 +19,10 @@ const SendProposalForm = ({ project }) => {
         e.preventDefault();
 
         const proposalData = {
-            project_id: project._id,
+            project_id: singleProject._id,
             cover_letter: coverLetter,
-            hourly_rate: project.project_type === "hourly" ? hourlyRate : undefined,
-            fixed_price: project.project_type === "fixed" ? fixedPrice : undefined,
+            hourly_rate: singleProject.project_type === "hourly" ? hourlyRate : undefined,
+            fixed_price: singleProject.project_type === "fixed" ? fixedPrice : undefined,
             duration,
         };
 
@@ -52,7 +52,7 @@ const SendProposalForm = ({ project }) => {
                     <h2 className="text-xl font-semibold text-gray-900 mb-6">Send Your Proposal</h2>
 
                     <div className="space-y-6">
-                        {project.project_type === "fixed" ? (
+                        {singleProject.project_type === "fixed" ? (
                             <div className="mb-6">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Your Fixed Price</label>
                                 <input

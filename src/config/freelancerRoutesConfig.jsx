@@ -11,6 +11,7 @@ import CreateGig from "../pages/dashboard/freelancer/CreateGig";
 import EditProposalForm from "../pages/dashboard/freelancer/EditProposalForm";
 import ManageGigs from "../pages/dashboard/freelancer/ManageGigs";
 import GigPreview from "../pages/dashboard/freelancer/GigPreview";
+import ViewFreelancerProposal from "../pages/dashboard/freelancer/ViewFreelancerProposal";
 
 
 export const freelancerRoutesConfig = [
@@ -77,5 +78,10 @@ export const freelancerRoutesConfig = [
     {
         path: "/freelancer-dashboard/freelancer-proposal/editproposal/:id",
         component: <EditProposalForm />,
+    },
+    {
+        path: "/freelancer-dashboard/freelancer-proposal/view-proposal/:id",
+        component: <ViewFreelancerProposal />,
+        showInSidebar: false,
     },
 ];

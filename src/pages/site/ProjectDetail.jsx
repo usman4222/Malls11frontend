@@ -20,14 +20,13 @@ import SendProposalForm from './SendProposalForm';
 import { getSingleProject } from '../../actions/projects/projectAction';
 
 const ProjectDetail = () => {
-    console.log("🟢 ProjectDetail component mounted");
-
     const { id } = useParams();
     const dispatch = useDispatch();
-    const { singleProject: project, loadingSingleProject: loading } = useSelector((state) => state.allProjects);
+    const { singleProject, loadingSingleProject } = useSelector((state) => state.allProjects);
+
     const userId = id
 
-    console.log("Project Detail Page - Project Data:", project);
+    console.log("Project Detail Page - Project Data:", singleProject);
     console.log("🧠 RENDER ProjectDetail - id:", id);
 
     useEffect(() => {
@@ -55,7 +54,7 @@ const ProjectDetail = () => {
                 </SectionWrapper>
             </div>
             <ExploreCard />
-            {loading ? (
+            {loadingSingleProject ? (
                 <SpinnerSquare />
             ) : (
                 <>
@@ -68,31 +67,31 @@ const ProjectDetail = () => {
                                     <div className=" w-full px-4">
                                         {/* Project Details Grid */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                                            {project && [
+                                            {singleProject && [
                                                 {
                                                     icon: MapPin,
                                                     label: "Freelancer location",
-                                                    value: project.location || "N/A",
+                                                    value: singleProject.location || "N/A",
                                                 },
                                                 {
                                                     icon: DollarSign,
                                                     label: "Project Type",
-                                                    value: project.project_type || "N/A",
+                                                    value: singleProject.project_type || "N/A",
                                                 },
                                                 {
                                                     icon: Clock,
                                                     label: "Duration",
-                                                    value: project.duration || "N/A",
+                                                    value: singleProject.duration || "N/A",
                                                 },
                                                 {
                                                     icon: ThumbsUp,
                                                     label: "Experience",
-                                                    value: project.experience || "N/A",
+                                                    value: singleProject.experience || "N/A",
                                                 },
                                                 {
                                                     icon: Languages,
                                                     label: "Languages",
-                                                    value: project.language || "N/A",
+                                                    value: singleProject.language || "N/A",
                                                 }
                                             ].map((item, index) => {
                                                 const IconComponent = item.icon;
@@ -121,7 +120,7 @@ const ProjectDetail = () => {
                                         <div>
                                             <h2 className="text-xl font-semibold text-gray-900 mb-4">Project Description</h2>
                                             <p className="text-black pt-5 px-4 sm:px-0 text-sm md:text-[16px]">
-                                                {project.project_des || "No description available."}
+                                                {singleProject.project_des || "No description available."}
                                             </p>
                                         </div>
 
@@ -132,9 +131,9 @@ const ProjectDetail = () => {
                                         <div>
                                             <h2 className="text-xl font-semibold text-gray-900 mb-4">Project Attachment</h2>
                                             <div className="pt-5 px-4 sm:px-0 text-sm md:text-[16px] text-black">
-                                                {project.project_doc ? (
+                                                {singleProject.project_doc ? (
                                                     <a
-                                                        href={project.project_doc}
+                                                        href={singleProject.project_doc}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="text-blue-600 hover:underline"
@@ -154,8 +153,8 @@ const ProjectDetail = () => {
                                         <div>
                                             <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills Required</h2>
                                             <div className="flex gap-2 flex-wrap">
-                                                {Array.isArray(project.skills)
-                                                    ? project.skills.map((skill, idx) => (
+                                                {Array.isArray(singleProject.skills)
+                                                    ? singleProject.skills.map((skill, idx) => (
                                                         <span
                                                             key={idx}
                                                             className="bg-[#E9E9E9] text-gray-500 cursor-pointer mt-3 transition-all ease-in-out hover:text-black w-fit text-sm hover:scale-120 font-medium px-6 py-2 rounded-full"
@@ -163,9 +162,9 @@ const ProjectDetail = () => {
                                                             {skill}
                                                         </span>
                                                     ))
-                                                    : project.category && (
+                                                    : singleProject.category && (
                                                         <span className="bg-primary-custom text-white cursor-pointer mt-3 transition-all ease-in-out hover:text-white w-fit text-sm hover:scale-120 font-medium px-6 py-2 rounded-full">
-                                                            {project.category}
+                                                            {singleProject.category}
                                                         </span>
                                                     )}
                                             </div>
@@ -174,7 +173,7 @@ const ProjectDetail = () => {
                                 </div>
                             </div>
                             <div className="border-t border-gray-300 my-6"></div>
-                            <SendProposalForm project={project} />
+                            <SendProposalForm singleProject={singleProject} />
                         </div>
                         {/* Right Sidebar */}
                         <div className="w-full lg:w-80">
@@ -184,17 +183,17 @@ const ProjectDetail = () => {
                                     <CardContent className="p-6">
                                         {/* Price Section */}
                                         <div className="text-right mb-6">
-                                            {project.fixed_price ? (
+                                            {singleProject.fixed_price ? (
                                                 <>
                                                     <div className="text-2xl font-bold text-gray-900 mb-1">
-                                                        ${project.fixed_price}
+                                                        ${singleProject.fixed_price}
                                                     </div>
                                                     <div className="text-sm text-gray-600">Fixed</div>
                                                 </>
-                                            ) : project.hourly_rate ? (
+                                            ) : singleProject.hourly_rate ? (
                                                 <>
                                                     <div className="text-2xl font-bold text-gray-900 mb-1">
-                                                        ${project.hourly_rate.min} - ${project.hourly_rate.max}
+                                                        ${singleProject.hourly_rate.min} - ${singleProject.hourly_rate.max}
                                                     </div>
                                                     <div className="text-sm text-gray-600">Hourly</div>
                                                 </>
@@ -219,13 +218,13 @@ const ProjectDetail = () => {
                                             <div className="flex items-center gap-3 mb-5">
                                                 <div className="w-12 h-12 rounded-full overflow-hidden">
                                                     <img
-                                                        src={project?.client_id?.profile_image}
+                                                        src={singleProject?.client_id?.profile_image}
                                                         alt="DonStar Group profile"
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <div className="font-medium text-gray-900">{project?.client_id?.username}</div>
+                                                    <div className="font-medium text-gray-900">{singleProject?.client_id?.username}</div>
                                                 </div>
                                             </div>
 
@@ -233,7 +232,7 @@ const ProjectDetail = () => {
                                             <div className="grid grid-cols-3 gap-2 text-sm mb-5">
                                                 <div>
                                                     <div className="text-gray-500 mb-1">Location</div>
-                                                    <div className="font-medium">{project?.client_id?.country}</div>
+                                                    <div className="font-medium">{singleProject?.client_id?.country}</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-gray-500 mb-1">Employees</div>
@@ -241,7 +240,7 @@ const ProjectDetail = () => {
                                                 </div>
                                                 <div>
                                                     <div className="text-gray-500 mb-1">Categories</div>
-                                                    <div className="font-medium">{project?.client_id?.category}</div>
+                                                    <div className="font-medium">{singleProject?.client_id?.category}</div>
                                                 </div>
                                             </div>
 
@@ -249,11 +248,11 @@ const ProjectDetail = () => {
                                             <div className="grid grid-cols-3 gap-2 text-sm mb-5">
                                                 <div>
                                                     <div className="text-gray-500 mb-1">Whatsapp No.</div>
-                                                    <div className="font-medium">{project?.client_id?.whatsapp_no}</div>
+                                                    <div className="font-medium">{singleProject?.client_id?.whatsapp_no}</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-gray-500 mb-1">Email</div>
-                                                    <div className="font-medium">{project?.client_id?.email}</div>
+                                                    <div className="font-medium">{singleProject?.client_id?.email}</div>
                                                 </div>
                                             </div>
                                         </div>

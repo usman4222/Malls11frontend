@@ -5,6 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Star, MapPin, Calendar, CheckCircle } from "lucide-react"
 import { formatRelativeTime } from '../../../utils/formatRelativeTime';
 import { getSingleProject } from '../../../actions/projects/projectAction';
+import { updateClientProjectStatus } from '../../../actions/client/projectAction';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ViewProject = () => {
     const { id } = useParams();
@@ -14,17 +18,20 @@ const ViewProject = () => {
     const status = singleProject?.status || "Open";
     const [selectedStatus, setSelectedStatus] = useState(status);
 
-    const handleStatusUpdate = (newStatus) => {
-        setSelectedStatus(newStatus);
+    const handleStatusUpdate = async (newStatus) => {
+        const prevStatus = selectedStatus; // store previous status in case we need to revert
+        setSelectedStatus(newStatus); // optimistic UI update
         setStatusDropdownOpen(false);
 
-        // TODO: Dispatch your API update call here
-        console.log("Updating status to:", newStatus);
-
-        // Example toast
-        toast.success(`Status updated to ${newStatus}`);
+        try {
+            await dispatch(updateClientProjectStatus(singleProject._id, newStatus));
+            toast.success(`Project status updated to ${newStatus}`);
+            dispatch(getSingleProject(singleProject._id));
+        } catch (error) {
+            setSelectedStatus(prevStatus); // revert back on failure
+            toast.error("Failed to update project status.");
+        }
     };
-
     useEffect(() => {
         if (id) {
             dispatch(getSingleProject(id));
@@ -43,6 +50,7 @@ const ViewProject = () => {
 
     return (
         <>
+            <ToastContainer />
             <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">{singleProject.title}</h1>
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-6">
@@ -82,7 +90,7 @@ const ViewProject = () => {
                     </div>
                     <div>
                         <p><span className="font-semibold">Fixed Price:</span> ${singleProject.fixed_price || 'N/A'}</p>
-                        <p><span className="font-semibold">Hourly Rate:</span> {singleProject.hourly_rate ? `$${project.hourly_rate.min} - $${project.hourly_rate.max}` : 'N/A'}</p>
+                        <p><span className="font-semibold">Hourly Rate:</span> {singleProject.hourly_rate ? `$${singleProject.hourly_rate.min} - $${singleProject.hourly_rate.max}` : 'N/A'}</p>
                         <p><span className="font-semibold">Status:</span> {singleProject.status}</p>
                         <p><span className="font-semibold">Posted:</span> {new Date(singleProject.created_at).toLocaleDateString()}</p>
                     </div>
