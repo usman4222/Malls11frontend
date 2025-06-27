@@ -37,7 +37,6 @@ const userSlice = createSlice({
       state.error = null;
     },
     LOGIN_USER_SUCCESS: (state, action) => {
-      console.log("Login success payload:", action.payload);
       state.currentUser = action.payload.user;
       state.token = action.payload.token;
       state.tokenExpiry = action.payload.tokenExpiry;
@@ -55,10 +54,9 @@ const userSlice = createSlice({
       state.error = null;
     },
     COMPLETE_PROFILE_SUCCESS: (state, action) => {
-      // Update currentUser with additional profile info
       state.currentUser = {
         ...state.currentUser,
-        ...action.payload, // includes updated profile data
+        ...action.payload, 
       };
       state.loading = false;
       state.error = null;
@@ -75,7 +73,6 @@ const userSlice = createSlice({
       state.error = null;
     },
     GET_MY_PROFILE_SUCCESS: (state, action) => {
-      console.log("Get Profile Success payload:", action.payload);
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
@@ -92,7 +89,6 @@ const userSlice = createSlice({
       state.error = null;
     },
     GET_USER_PROFILE_SUCCESS: (state, action) => {
-      // You may want to store this in a different state key if needed
       state.viewedUser = action.payload;
       state.loading = false;
       state.error = null;
@@ -127,7 +123,6 @@ const userSlice = createSlice({
       state.error = null;
     },
     CLIENT_VERIFICATION_SUCCESS: (state, action) => {
-      // Update only the verification part of the profile
       state.currentUser = {
         ...state.currentUser,
         ...action.payload,

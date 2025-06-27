@@ -106,11 +106,12 @@ function EditProfileForm() {
         profile_image: imageUrl,
       };
 
-      await dispatch(createUserProfile(payload, token)).unwrap();
+      await dispatch(createUserProfile(payload, token))
 
       toast.success("Profile updated successfully!");
-      setFile(null);
-      // reset();
+      form.reset(); 
+      setFile(null); 
+      setImagePreview(null);
     } catch (error) {
       const message =
         error?.response?.data?.message ||

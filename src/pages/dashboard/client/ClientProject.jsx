@@ -84,9 +84,9 @@ function ClientProject() {
       const payload = {
         ...formData,
         fixed_price:
-          selectedProjectType === "fixed" ? formData.fixed_price : null,
+          selectedProjectType === "Fixed" ? formData.fixed_price : null,
         hourly_rate:
-          selectedProjectType === "hourly"
+          selectedProjectType === "Hourly"
             ? {
               min: formData.min_hourly_rate,
               max: formData.max_hourly_rate,
@@ -100,6 +100,9 @@ function ClientProject() {
       await dispatch(createProject(payload));
 
       toast.success("Project created successfully!");
+      form.reset();
+      setSelectedProjectType("");
+      setCountries("")
     } catch (error) {
       console.log("error", error);
 
@@ -175,8 +178,8 @@ function ClientProject() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="fixed">Fixed Project</SelectItem>
-                          <SelectItem value="hourly">Hourly Project</SelectItem>
+                          <SelectItem value="Fixed">Fixed Project</SelectItem>
+                          <SelectItem value="Hourly">Hourly Project</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -184,7 +187,7 @@ function ClientProject() {
                   )}
                 />
 
-                {selectedProjectType === "fixed" && (
+                {selectedProjectType === "Fixed" && (
                   <div className="md:col-span-2">
                     <FormField
                       control={form.control}
@@ -215,7 +218,7 @@ function ClientProject() {
                   </div>
                 )}
 
-                {selectedProjectType === "hourly" && (
+                {selectedProjectType === "Hourly" && (
                   <>
                     <FormField
                       control={form.control}
@@ -285,8 +288,8 @@ function ClientProject() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="self">Self</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="Self">Self</SelectItem>
+                          <SelectItem value="Admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -333,11 +336,11 @@ function ClientProject() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="beginner">Beginner</SelectItem>
-                          <SelectItem value="intermediate">
+                          <SelectItem value="Beginner">Beginner</SelectItem>
+                          <SelectItem value="Intermediate">
                             Intermediate
                           </SelectItem>
-                          <SelectItem value="expert">Expert</SelectItem>
+                          <SelectItem value="Expert">Expert</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

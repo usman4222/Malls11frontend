@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Pencil, Trash2, MapPin, Grid, Calendar } from "lucide-react";
+import { Search, Pencil, Trash2, MapPin, Grid, Calendar, Mail } from "lucide-react";
 import { Button } from "@/components/SiteComponents/ui/button";
 import { Input } from "@/components/SiteComponents/ui/input";
 import {
@@ -28,8 +28,9 @@ function ManageClientProjects({ type, project }) {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const handleVisibilityToggle = (projectId, currentVisibility) => {
-        const newVisibility = currentVisibility === "public" ? "private" : "public";
+
+    const handleVisibilityToggle = async (projectId, currentVisibility) => {
+        const newVisibility = currentVisibility === "Public" ? "Private" : "Public";
 
         setProjects(prev =>
             prev.map(proj =>
@@ -37,22 +38,32 @@ function ManageClientProjects({ type, project }) {
             )
         );
 
-        dispatch(updateClientProjectVisibility(projectId, newVisibility));
-        dispatch(getAllClientProjects());
-        toast.success(`Project visibility updated to ${newVisibility}`);
-    };
+        try {
+            await dispatch(updateClientProjectVisibility(projectId, newVisibility));
+            toast.success(`Project visibility updated to ${newVisibility}`);
 
+            await dispatch(getAllClientProjects());
+        } catch (error) {
+            toast.error("Failed to update project visibility");
+
+            setProjects(prev =>
+                prev.map(proj =>
+                    proj._id === projectId ? { ...proj, visibility: currentVisibility } : proj
+                )
+            );
+        }
+    };
 
     const handleDelete = async (projectId) => {
         if (window.confirm("Are you sure you want to delete this project?")) {
             dispatch(deleteClientProject(projectId))
                 .then(() => {
                     setProjects(prevProjects => prevProjects.filter(p => p._id !== projectId));
+                    dispatch(getAllClientProjects());
                     toast.success("Project deleted successfully!");
                 })
                 .catch((error) => {
-                    toast.error("Failed to delete the project");
-                    console.error("Delete error:", error);
+                    toast.error(error.response?.data.message);
                 });
         }
     };
@@ -166,13 +177,13 @@ function ManageClientProjects({ type, project }) {
                                                 <input
                                                     type="checkbox"
                                                     className="sr-only peer"
-                                                    checked={project.visibility === "public"}
+                                                    checked={project.visibility === "Public"}
                                                     onChange={() => handleVisibilityToggle(project._id, project.visibility)}
                                                 />
 
                                                 <div className="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                                                 <span className="ml-3 text-sm font-medium text-gray-900">
-                                                    {project.visibility === "public" ? "public" : "private"}
+                                                    {project.visibility === "Public" ? "Public" : "Private"}
                                                 </span>
                                             </Label>
                                         </div>
@@ -181,8 +192,11 @@ function ManageClientProjects({ type, project }) {
                                         <div className="flex justify-end gap-2">
                                             <Link to={`/client-dashboard/manage-project/project-proposals/${project._id}`}>
                                                 <Button variant="default" className="bg-emerald-500 hover:bg-emerald-600">
-                                                    View
+                                                    View proposals
                                                 </Button>
+                                            </Link>
+                                            <Link className="p-2 border rounded-md shadow-sm bg-gray-100 hover:bg-gray-200 transition" to={`/client-dashboard/view-project/${project._id}`}>
+                                                <Mail size={18} className="text-gray-700" />
                                             </Link>
                                             <Link to={`/client-dashboard/manage-project/edit-project/${project._id}`} >
                                                 <Button variant="outline">

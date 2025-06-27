@@ -23,15 +23,35 @@ import 'react-toastify/dist/ReactToastify.css';
 import { uploadImageToCloudinary } from "../../../utils/uploadImage";
 
 const formSchema = z.object({
+  document_type: z.enum(["cnic", "passport"], {
+    required_error: "Please select a document type",
+  }),
   address: z.string().min(5, "Address too short"),
   contact_no: z.string().min(7, "Contact number is too short"),
-  cnic_no: z.string().min(5, "CNIC/Passport number is too short"),
-  document: z
+  cnic_no: z.string().optional(),
+  passport_no: z.string().optional(),
+  verification_document: z
     .any()
     .refine((file) => file instanceof File, {
       message: "Document is required",
     }),
+}).superRefine((data, ctx) => {
+  if (data.document_type === "cnic" && !data.cnic_no) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "CNIC number is required",
+      path: ["cnic_no"],
+    });
+  }
+  if (data.document_type === "passport" && !data.passport_no) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Passport number is required",
+      path: ["passport_no"],
+    });
+  }
 });
+
 
 
 
@@ -45,11 +65,13 @@ function VerifyClient() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      document_type: "cnic",
       address: "",
       contact_no: "",
       cnic_no: "",
-      document: null,
-    },
+      passport_no: "",
+      verification_document: null,
+    }
   });
 
   useEffect(() => {
@@ -57,26 +79,23 @@ function VerifyClient() {
   }, [form.formState.errors]);
 
   const onSubmit = async (data) => {
-
-    console.log("Form data:", data);
     try {
       setIsLoading(true);
 
-
       let documentUrl = "";
-      if (data.document) {
-        documentUrl = await uploadImageToCloudinary(data.document);
-        console.log("Uploaded document URL:", documentUrl);
+      if (data.verification_document) {
+        documentUrl = await uploadImageToCloudinary(data.verification_document);
       }
 
       const formData = new FormData();
-
       formData.append("contact_no", data.contact_no);
-      formData.append("cnic_no", data.cnic_no);
       formData.append("address", data.address);
-      formData.append("doc_pic", documentUrl);
-      if (data.passport_no) {
-        formData.append("passport_no", datapassport_no);
+      formData.append("verification_document", documentUrl);
+
+      if (data.document_type === "cnic") {
+        formData.append("cnic_no", data.cnic_no);
+      } else if (data.document_type === "passport") {
+        formData.append("passport_no", data.passport_no);
       }
 
       const response = await dispatch(verifyClient(formData, token));
@@ -87,6 +106,8 @@ function VerifyClient() {
       }
 
       toast.success("Profile updated successfully!");
+      form.reset();
+      verification_document(null);
     } catch (error) {
       const message =
         error?.response?.data?.message ||
@@ -99,12 +120,13 @@ function VerifyClient() {
   };
 
 
+
+
   return (
     <div className="container mx-auto py-10 px-4 bg-[#F0EFEC]">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-semibold mb-6">
           Verification Details{" "}
-          <span className="text-xs text-red-600">* All fields are required</span>
         </h1>
 
         <Card>
@@ -128,29 +150,77 @@ function VerifyClient() {
                     </FormItem>
                   )}
                 />
-
-                {/* Identification Number */}
                 <FormField
                   control={form.control}
-                  name="cnic_no"
+                  name="document_type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>CNIC / Passport</FormLabel>
+                      <FormLabel>Select Document Type</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your identification number"
-                          {...field}
-                        />
+                        <div className="flex gap-4">
+                          <label className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              value="cnic"
+                              checked={field.value === "cnic"}
+                              onChange={field.onChange}
+                            />
+                            CNIC
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              value="passport"
+                              checked={field.value === "passport"}
+                              onChange={field.onChange}
+                            />
+                            Passport
+                          </label>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
+
+                {/* Identification Number */}
+                {form.watch("document_type") === "cnic" && (
+                  <FormField
+                    control={form.control}
+                    name="cnic_no"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>CNIC Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter CNIC number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {form.watch("document_type") === "passport" && (
+                  <FormField
+                    control={form.control}
+                    name="passport_no"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Passport Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter passport number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
                 {/* Document Upload */}
                 <FormField
                   control={form.control}
-                  name="document"
+                  name="verification_document"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Upload Document</FormLabel>

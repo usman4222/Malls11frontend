@@ -43,7 +43,7 @@ const DynamicFieldsInput = ({ form }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex flex-col">
       <Label>Awards</Label>
       {(awards || []).map((value, index) => (
         <FormField
@@ -82,7 +82,7 @@ const DynamicFieldsInput = ({ form }) => {
       ))}
       <Button type="button" variant="outline" onClick={addField}>
         <PlusCircle className="h-4 w-4 mr-2" />
-        Add Another Award
+        Add Award
       </Button>
     </div>
   );

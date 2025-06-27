@@ -72,7 +72,6 @@ const gigSlice = createSlice({
             state.error = null;
         },
         GET_GIG_SUCCESS: (state, action) => {
-            console.log("Gig Data:", action.payload);
             state.loading = false;
             state.gig = action.payload;
         },

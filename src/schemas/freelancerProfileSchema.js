@@ -31,7 +31,7 @@ const freelancerFormSchema = z.object({
   role: z.string().min(1, "Role is required"),
   categories: z.string().min(1, "Category is required"),
   profile_des: z.string().optional(),
-  doc_pic: z.any().optional(),
+  user_doc: z.any().optional(),
   faqs: z.any().optional(),
   website: z.string().url("Invalid website URL"),
 

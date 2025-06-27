@@ -23,12 +23,13 @@ const siteRoutes = () => ([
     <Route
         path="/projects/project-details/:id"
         element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
                 <ProjectDetail />
-            // </ProtectedRoute>
+            </ProtectedRoute>
         }
         key="project-details"
     />,
+    // <Route path="/projects/project-details/:id" element={<ProjectDetail />} />,
     <Route
         path="/frelancers/frelancer-details/:id"
         element={

@@ -62,11 +62,7 @@ export const getSingleGig = (id) => async (dispatch) => {
 
         const { data } = await axiosInstance.get(`/gig/get-single-gig/${id}`);
 
-        console.log("Single Data Gig:", data);
-
         dispatch(GET_GIG_SUCCESS(data.gig));
-
-        console.log("Single Gig.Data:", data.gig);
 
         return data.gig;
     } catch (error) {

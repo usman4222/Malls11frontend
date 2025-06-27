@@ -25,17 +25,21 @@ const ProjectDetail = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const { singleProject: project, loadingSingleProject: loading } = useSelector((state) => state.allProjects);
+    const userId = id
 
     console.log("Project Detail Page - Project Data:", project);
-    console.log("ID:", id);
+    console.log("🧠 RENDER ProjectDetail - id:", id);
 
     useEffect(() => {
-        console.log("🟢 useEffect triggered");
-        if (id) {
-            console.log("🚀 Dispatching getSingleProject with ID:", id);
-            dispatch(getSingleProject(id));
+        if (!id) {
+            console.warn("❌ No ID in URL. useEffect not firing.");
+            return;
         }
-    }, [dispatch, id]);
+        console.log("🎯 Dispatching getSingleProject:", id);
+        dispatch(getSingleProject(id));
+    }, [id, dispatch]);
+
+
 
 
 

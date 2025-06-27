@@ -38,6 +38,11 @@ const ClientProjectProposals = () => {
     const { projectProposals, loading, error } = useSelector((state) => state.clientProjects);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMalls11ModalOpen, setIsMalls11ModalOpen] = useState(false);
+    const [proposals, setProposals] = useState([]);
+
+
+    console.log("Project Proposals:", projectProposals);
+
 
     useEffect(() => {
         if (projectId) {
@@ -55,15 +60,35 @@ const ClientProjectProposals = () => {
     };
 
     const handleStatusToggle = async (proposalId, currentStatus) => {
-        const newStatus = currentStatus === "pending" ? "accepted" : "pending";
+        const newStatus = currentStatus === "Pending" ? "Accepted" : "Pending";
+
+        // 1. Optimistically update UI
+        setProposals((prevProposals) =>
+            prevProposals.map((proposal) =>
+                proposal._id === proposalId
+                    ? { ...proposal, status: newStatus }
+                    : proposal
+            )
+        );
+
         try {
+            // 2. Send update to server
             await dispatch(updateProposalStatus(proposalId, newStatus));
-            await dispatch(getAllProjectProposals(projectId));
             toast.success(`Proposal status updated to ${newStatus}`);
+            dispatch(getAllProjectProposals(projectId));
         } catch (error) {
+            // 3. Revert if request fails
+            setProposals((prevProposals) =>
+                prevProposals.map((proposal) =>
+                    proposal._id === proposalId
+                        ? { ...proposal, status: currentStatus }
+                        : proposal
+                )
+            );
             toast.error(error?.response?.data?.message || "Failed to update status");
         }
     };
+
 
     const filteredProposals = useMemo(() => {
         if (!projectProposals) return [];
@@ -156,16 +181,20 @@ const ClientProjectProposals = () => {
                                     <TableRow key={proposal._id}>
                                         <TableCell>
                                             <div className="space-y-1 w-[27rem]">
-                                                <p className="text-xl font-[500]">{proposal.project_id?.title || "No Title"}</p>
+                                                <p className="text-xl font-[500]">
+                                                    {proposal.cover_letter
+                                                        ? proposal.cover_letter.slice(0, 50) + (proposal.cover_letter.length > 100 ? "..." : "")
+                                                        : "No Title"}
+                                                </p>
                                                 <div className="flex gap-3 text-sm text-muted-foreground">
-                                                    <div className="flex items-center gap-1">
+                                                    {/* <div className="flex items-center gap-1">
                                                         <MapPin className="h-4 w-4" />
                                                         {proposal.freelancer_id?.country || "Unknown location"}
-                                                    </div>
+                                                    </div> */}
                                                     <div className="flex items-center gap-1">
                                                         <Calendar className="h-4 w-4" />
-                                                        {proposal.createdAt
-                                                            ? formatRelativeTime(proposal.createdAt)
+                                                        {proposal.submitted_at
+                                                            ? formatRelativeTime(proposal.submitted_at)
                                                             : "Unknown date"}
                                                     </div>
                                                 </div>
@@ -233,13 +262,13 @@ const ClientProjectProposals = () => {
                                                     <input
                                                         type="checkbox"
                                                         className="sr-only peer"
-                                                        checked={proposal.status === "accepted"}
+                                                        checked={proposal.status === "Accepted"}
                                                         onChange={() => handleStatusToggle(proposal._id, proposal.status)}
-                                                        disabled={proposal.status === "accepted"}
+                                                        disabled={proposal.status === "Accepted"}
                                                     />
                                                     <div className="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                                                     <span className="ml-3 text-sm font-medium text-gray-900">
-                                                        {proposal.status === "accepted" ? "Accepted" : "Pending"}
+                                                        {proposal.status === "Accepted" ? "Accepted" : "Pending"}
                                                     </span>
                                                 </label>
 

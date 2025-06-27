@@ -15,7 +15,6 @@ export const createProject = (formData) => async (dispatch) => {
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Failed to delete profile";
         dispatch(CREATE_PROJECT_FAIL(errorMessage));
-        console.log("errorMessage", errorMessage);
 
         // return { success: false, message: errorMessage };
         // console.log(errorMessage);
@@ -66,7 +65,6 @@ export const getAllProjects = () => async (dispatch) => {
 
         dispatch(GET_ALL_PROJECTS_SUCCESS(data.projects));
     } catch (error) {
-        console.error("Error fetching projects:", error);
         dispatch(GET_ALL_PROJECTS_FAIL(error.message || "Failed to fetch projects"));
     }
 };
@@ -133,14 +131,15 @@ export const deleteClientProject = (projectId) => async (dispatch) => {
         const { data } = await axiosInstance.delete(`/project/delete-project/${projectId}`);
 
         dispatch(DELETE_CLIENT_PROJECT_SUCCESS(data.data));
+        return data
     } catch (error) {
-        dispatch(
-            DELETE_CLIENT_PROJECT_FAIL(
-                error.response?.data?.message || "Failed to update project status"
-            )
-        );
+        const errorMessage =
+            error.response?.data?.message || "Failed to delete the project.";
+        dispatch(DELETE_CLIENT_PROJECT_FAIL(errorMessage));
+        throw error
     }
 };
+
 
 
 export const getAllClientProposal = () => async (dispatch) => {
@@ -153,7 +152,6 @@ export const getAllClientProposal = () => async (dispatch) => {
 
         return data.proposals;
     } catch (error) {
-        console.error("Error fetching projects:", error);
         dispatch(GET_ALL_CLIENT_PROPOSAL_FAIL(error.message || "Failed to fetch projects"));
         throw error;
     }

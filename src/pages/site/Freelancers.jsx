@@ -326,7 +326,7 @@ const Freelancers = () => {
                                 className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"
                               />
                             ) : (
-                              <CircleUserRound size={60} />
+                              <CircleUserRound size={80} />
                             )}
                           </div>
 

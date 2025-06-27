@@ -5,42 +5,36 @@ import axiosInstance from "../../utils/axiosInstance";
 
 export const registerUser = (userData) => async (dispatch) => {
     try {
-        dispatch({ type: REGISTER_USER_REQUEST });
+        dispatch(REGISTER_USER_REQUEST());
 
-        const { data } = await axiosInstance.post(
-            "/auth/register-user",
-            userData
-        );
+        const { data } = await axiosInstance.post("/auth/register-user", userData);
 
-        dispatch({
-            type: REGISTER_USER_SUCCESS,
-            payload: {
-                email: data.email,
-                userId: data.userId,
-            },
-        });
+        dispatch(REGISTER_USER_SUCCESS({
+            email: data.email,
+            userId: data.userId,
+        }));
+
         return data;
     } catch (error) {
-        const errorMessage = error?.response?.data?.message || error?.message || "Registration failed. Please try again.";
+        const errorMessage =
+            error?.response?.data?.message || error?.message || "Registration failed. Please try again.";
 
-        dispatch({
-            type: REGISTER_USER_FAIL,
-            payload: errorMessage,
-        });
+        dispatch(REGISTER_USER_FAIL(errorMessage));
 
-        throw error;
+        return { success: false, message: errorMessage };
     }
 };
 
+
 export const loginUser = (email, password) => async (dispatch) => {
     try {
-        dispatch({ type: LOGIN_USER_REQUEST });
+        dispatch(LOGIN_USER_REQUEST());
 
         const { data } = await axiosInstance.post(
             "/auth/login",
             { email, password },
         );
-        
+
         const decoded = decodeToken(data.token);
 
         const tokenExpiry = decoded.exp ? decoded.exp * 1000 : null;
@@ -50,17 +44,14 @@ export const loginUser = (email, password) => async (dispatch) => {
             LOGIN_USER_SUCCESS({
                 user: data.user,
                 token: data.token,
-                tokenExpiry
+                tokenExpiry,
             })
         );
 
         return data;
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || "Login failed. Please try again.";
-        dispatch({
-            type: LOGIN_USER_FAIL,
-            payload: errorMessage,
-        });
+        dispatch(LOGIN_USER_FAIL(errorMessage));
 
         throw error;
     }

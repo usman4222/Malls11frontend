@@ -1,17 +1,23 @@
-import { GET_SINGLE_PROJECT_FAIL, GET_SINGLE_PROJECT_REQUEST, GET_SINGLE_PROJECT_SUCCESS } from "../../store/slices/projects/allProjectSlice";
+// ✅ Correct imports — notice these are functions!
+import {
+  GET_SINGLE_PROJECT_REQUEST,
+  GET_SINGLE_PROJECT_SUCCESS,
+  GET_SINGLE_PROJECT_FAIL,
+} from "../../store/slices/projects/allProjectSlice";
+
 import axiosInstance from "../../utils/axiosInstance";
 
-export const getSingleProject = (id) => async (dispatch) => {
+export const getSingleProject = (userId) => async (dispatch) => {
   try {
-    console.log("🔥 Thunk Called with ID:", id);
-    dispatch(GET_SINGLE_PROJECT_REQUEST());
+    console.log("🔥 Thunk Called with ID:", userId);
+    dispatch(GET_SINGLE_PROJECT_REQUEST()); // ✅ call the function!
 
-    const { data } = await axiosInstance.get(`/project/single-project/${id}`);
+    const { data } = await axiosInstance.get(`/project/single-project/${userId}`);
     console.log("✅ Data from API:", data);
 
-    dispatch(GET_SINGLE_PROJECT_SUCCESS(data.project));
+    dispatch(GET_SINGLE_PROJECT_SUCCESS(data.project)); // ✅ pass payload directly
   } catch (error) {
     console.error("❌ Error in getSingleProject:", error);
-    dispatch(GET_SINGLE_PROJECT_FAIL(error.message));
+    dispatch(GET_SINGLE_PROJECT_FAIL(error.message)); // ✅ pass payload directly
   }
 };

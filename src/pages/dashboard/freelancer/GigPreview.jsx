@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 import { Clock, Globe, Star, Edit2, ArrowLeft, RefreshCcwDot, Check } from 'lucide-react'
 import { Button } from "../../../components/SiteComponents/ui/button"
@@ -17,6 +15,7 @@ import 'swiper/css/thumbs'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSingleGig } from '../../../actions/gig/gigAction'
+import axios from 'axios'
 
 export default function GigPreview() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
@@ -25,11 +24,9 @@ export default function GigPreview() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { gig } = useSelector((state) => state.gigs);
+  const { gig } = useSelector((state) => state.gigs)
 
-  console.log("gig", gig);
-  console.log("id", id);
-
+  console.log("Gig Data:", gig);
 
   useEffect(() => {
     if (id) {
@@ -37,55 +34,57 @@ export default function GigPreview() {
     }
   }, [dispatch, id]);
 
-  const gigData = {
-    title: "UI/UX",
-    price: 500.0,
-    deliveryTime: "3 Days Delivery",
-    revisions: "2 Revisions",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/abcdefgh.jpg-zxcSDfgaoQuny6slX4JzwEJAP5wDyv.jpeg",
-      "/placeholder.svg?height=400&width=600",
-    ],
-    description: "Professional UI/UX Design Services",
-    seller: {
-      name: "John Doe",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rating: 4.9,
-      reviews: 150
-    },
-    relatedServices: [
-      {
-        id: 1,
-        title: "I will design logos and banners",
-        price: 50.0,
-        image: "/placeholder.svg?height=200&width=300",
-        seller: {
-          name: "Jane Smith",
-          avatar: "/placeholder.svg?height=40&width=40"
-        }
-      },
-      {
-        id: 2,
-        title: "Social media post design",
-        price: 35.0,
-        image: "/placeholder.svg?height=200&width=300",
-        seller: {
-          name: "Mike Johnson",
-          avatar: "/placeholder.svg?height=40&width=40"
-        }
-      },
-      {
-        id: 3,
-        title: "Logo design and company logo",
-        price: 100.0,
-        image: "/placeholder.svg?height=200&width=300",
-        seller: {
-          name: "Sarah Wilson",
-          avatar: "/placeholder.svg?height=40&width=40"
-        }
-      }
-    ]
-  }
+
+
+  // const gigData = {
+  //   title: "UI/UX",
+  //   price: 500.0,
+  //   deliveryTime: "3 Days Delivery",
+  //   revisions: "2 Revisions",
+  //   images: [
+  //     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/abcdefgh.jpg-zxcSDfgaoQuny6slX4JzwEJAP5wDyv.jpeg",
+  //     "/placeholder.svg?height=400&width=600",
+  //   ],
+  //   description: "Professional UI/UX Design Services",
+  //   seller: {
+  //     name: "John Doe",
+  //     avatar: "/placeholder.svg?height=50&width=50",
+  //     rating: 4.9,
+  //     reviews: 150
+  //   },
+  //   relatedServices: [
+  //     {
+  //       id: 1,
+  //       title: "I will design logos and banners",
+  //       price: 50.0,
+  //       image: "/placeholder.svg?height=200&width=300",
+  //       seller: {
+  //         name: "Jane Smith",
+  //         avatar: "/placeholder.svg?height=40&width=40"
+  //       }
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "Social media post design",
+  //       price: 35.0,
+  //       image: "/placeholder.svg?height=200&width=300",
+  //       seller: {
+  //         name: "Mike Johnson",
+  //         avatar: "/placeholder.svg?height=40&width=40"
+  //       }
+  //     },
+  //     {
+  //       id: 3,
+  //       title: "Logo design and company logo",
+  //       price: 100.0,
+  //       image: "/placeholder.svg?height=200&width=300",
+  //       seller: {
+  //         name: "Sarah Wilson",
+  //         avatar: "/placeholder.svg?height=40&width=40"
+  //       }
+  //     }
+  //   ]
+  // }
 
   const handleSubmitForReview = async () => {
     setIsSubmitting(true)
@@ -145,7 +144,7 @@ export default function GigPreview() {
                 modules={[Navigation, Pagination, Thumbs]}
                 className="h-full w-full border rounded-2xl overflow-hidden"
               >
-                {gigData.images.map((image, index) => (
+                {/* {gigData.images.map((image, index) => (
                   <SwiperSlide key={index}>
                     <img
                       src={image}
@@ -153,7 +152,7 @@ export default function GigPreview() {
                       className="object-cover w-full h-full"
                     />
                   </SwiperSlide>
-                ))}
+                ))} */}
               </Swiper>
             </div>
 
@@ -166,7 +165,7 @@ export default function GigPreview() {
               modules={[Thumbs]}
               className="h-24"
             >
-              {gigData.images.map((image, index) => (
+              {/* {gigData.images.map((image, index) => (
                 <SwiperSlide key={index}>
                   <div className="relative h-full w-full rounded-md overflow-hidden border cursor-pointer">
                     <img
@@ -176,7 +175,7 @@ export default function GigPreview() {
                     />
                   </div>
                 </SwiperSlide>
-              ))}
+              ))} */}
             </Swiper>
 
 
@@ -197,15 +196,15 @@ export default function GigPreview() {
               <TabsContent value="about" className="mt-4">
                 <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={gigData.seller.avatar} />
-                    <AvatarFallback>{gigData.seller.name[0]}</AvatarFallback>
+                    {/* <AvatarImage src={gigData.seller.avatar} />
+                    <AvatarFallback>{gigData.seller.name[0]}</AvatarFallback> */}
                   </Avatar>
                   <div>
                     <h3 className="font-semibold">{gigData.seller.name}</h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span>{gigData.seller.rating}</span>
-                      <span>({gigData.seller.reviews} reviews)</span>
+                      {/* <span>{gigData.seller.rating}</span>
+                      <span>({gigData.seller.reviews} reviews)</span> */}
                     </div>
                   </div>
                 </div>
@@ -225,20 +224,10 @@ export default function GigPreview() {
 
                   return (
                     <Card key={index} className="overflow-hidden">
-                      {/* <div className="relative aspect-video">
-                        <img
-                          src={pkg.image}
-                          alt={pkg.title}
-                          className="object-cover w-full h-full"
-                        />
-                      </div> */}
+
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-10">
-                          {/* Optionally show avatar if available */}
-                          {/* <Avatar className="h-6 w-6">
-              <AvatarImage src={pkg.avatar} />
-              <AvatarFallback>{pkg.title[0]}</AvatarFallback>
-            </Avatar> */}
+
                           <div className="text-lg font-semibold">{label}</div>
                           <div className="text-lg font-semibold">${pkg.price}</div>
                         </div>

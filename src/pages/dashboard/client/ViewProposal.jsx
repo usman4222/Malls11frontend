@@ -12,6 +12,9 @@ const ViewProposal = () => {
 
     const { singleProposal, loadingSingleProposal } = useSelector((state) => state.clientProjects);
 
+    console.log("singleProposal", singleProposal);
+
+
     useEffect(() => {
         if (id) {
             dispatch(getSingleProposal(id));
@@ -29,6 +32,8 @@ const ViewProposal = () => {
     }
 
     const { freelancer, project, ...proposal } = singleProposal;
+
+
 
     return (
         <>
@@ -70,12 +75,17 @@ const ViewProposal = () => {
 
                                     <div className="flex items-center gap-1">
                                         <Calendar className="w-4 h-4 text-gray-400" />
-                                        {singleProposal?.proposal?.createdAt
-                                            ? formatRelativeTime(singleProposal?.proposal?.createdAt)
+                                        {singleProposal?.proposal?.submitted_at
+                                            ? formatRelativeTime(singleProposal?.proposal?.submitted_at)
                                             : "Unknown date"}
                                     </div>
                                 </div>
+                                <div className="flex items-center mt-5">
+                                    <span className="font-medium mr-5">Email:</span>
+                                    <span className="text-gray-500">{singleProposal?.proposal?.freelancer_id?.email}</span>
+                                </div>
                             </div>
+
 
                             {/* Price */}
                             <div className="text-right flex-shrink-0">
@@ -86,9 +96,13 @@ const ViewProposal = () => {
 
                         {/* Proposal Message */}
                         <div className="text-gray-700 leading-relaxed">
+                            <h3 className='font-bold text-xl mt-5'>Cover Letter</h3>
                             <p>
                                 {singleProposal?.proposal.cover_letter}
                             </p>
+                        </div>
+                        <div>
+                            <h3 className='font-bold text-xl mt-5'>Proposal Status: <span>{singleProposal?.proposal.status}</span></h3>
                         </div>
                     </div>
                 </div>

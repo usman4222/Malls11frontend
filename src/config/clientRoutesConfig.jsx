@@ -3,7 +3,7 @@ import ChangePassword from "@/pages/dashboard/client/ChangePassoword";
 import EditProfileForm from "@/pages/dashboard/client/ClientProfile";
 import VerifyClient from "@/pages/dashboard/client/VerifyClient";
 import ClientProject from "@/pages/dashboard/client/ClientProject";
-import AllProposals from "@/pages/dashboard/client/AllProposals";
+// import AllProposals from "@/pages/dashboard/client/AllProposals";
 import DeleteProfile from "@/pages/dashboard/client/DeleteProfile";
 import CientMeetings from "@/pages/dashboard/client/CientMeetings";
 import AllProjects from "@/pages/dashboard/client/AllProjects";
@@ -13,6 +13,7 @@ import ManageClientProjects from "../pages/dashboard/client/ManageClientProjects
 import ViewProposal from "../pages/dashboard/client/ViewProposal";
 import ClientProjectProposals from "../pages/dashboard/client/ClientProjectProposals";
 import EditClientProject from "../pages/dashboard/client/EditClientProject";
+import ViewProject from "../pages/dashboard/client/ViewProject";
 
 
 export const clientRoutesConfig = [
@@ -52,12 +53,12 @@ export const clientRoutesConfig = [
     icon: <FilePlus2 className="mr-2 h-4 w-4" />,
     component: <ManageClientProjects />,
   },
-  {
-    path: "/client-dashboard/all-proposals",
-    name: "All Proposals",
-    icon: <SquareChartGantt className="mr-2 h-4 w-4" />,
-    component: <AllProposals />,
-  },
+  // {
+  //   path: "/client-dashboard/all-proposals",
+  //   name: "All Proposals",
+  //   icon: <SquareChartGantt className="mr-2 h-4 w-4" />,
+  //   component: <AllProposals />,
+  // },
   {
     path: "/client-dashboard/cient-meetings",
     name: "Cient Meetings",
@@ -95,6 +96,11 @@ export const clientRoutesConfig = [
   {
     path: "/client-dashboard/manage-project/edit-project/:id",
     component: <EditClientProject />,
+    showInSidebar: false,
+  },
+  {
+    path: "/client-dashboard/view-project/:id",
+    component: <ViewProject />,
     showInSidebar: false,
   },
 ];

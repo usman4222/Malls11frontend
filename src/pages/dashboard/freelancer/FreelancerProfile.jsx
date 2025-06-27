@@ -59,7 +59,7 @@ export default function FreelancerProfile() {
       website: "",
       categories: "",
       profile_des: "",
-      doc_pic: null,
+      user_doc: null,
       awards: [],
       skills: [],
       faqs: [{ question: "", answer: "" }],
@@ -107,12 +107,11 @@ export default function FreelancerProfile() {
   const onSubmit = async (formData) => {
     try {
       setIsLoading(true);
-      console.log("FAQs:", formData.faqs);
       let imageUrl = formData.profile_image || "";
       let documentUrl = "";
 
-      if (formData.doc_pic) {
-        documentUrl = await uploadFileToCloudinary(formData.doc_pic);
+      if (formData.user_doc) {
+        documentUrl = await uploadFileToCloudinary(formData.user_doc);
       }
 
       if (file) {
@@ -129,14 +128,26 @@ export default function FreelancerProfile() {
 
       const payload = {
         ...formData,
-        profile_image: imageUrl
+        profile_image: imageUrl,
+        user_doc: documentUrl,
+        social_links: {
+          instagram: formData.instagramUrl,
+          facebook: formData.facebookUrl,
+          linkedin: formData.linkedinUrl,
+          twitter: formData.twitterUrl,
+        }
       };
 
       await dispatch(createUserProfile(payload, token))
 
       toast.success("Profile updated successfully!");
       setFile(null);
-      // reset();
+      setImagePreview(null);
+
+      form.reset();
+      profile_image(null)
+      user_doc(null);
+
     } catch (error) {
       const message =
         error?.response?.data?.message ||
@@ -334,7 +345,7 @@ export default function FreelancerProfile() {
                 </div>
                 <UploadBox
                   control={form.control}
-                  name="doc_pic"
+                  name="user_doc"
                   label="Upload CV*"
                   accept="image/*,.pdf,.doc,.docx"
                   onChange={(e) =>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/SiteComponents/ui/button";
@@ -55,20 +55,17 @@ const serviceFormSchema = z.object({
   })
 });
 
-function PackageTier({
-  title,
-  type,
-  control,
-  defaultFeatures = [""]
-}) {
-  const [features, setFeatures] = useState(defaultFeatures);
+function PackageTier({ title, type, control }) {
+  const { setValue, watch } = useFormContext(); // 👈 get access to form methods
+  const features = watch(`${type}.features`) || [];
 
   const addFeature = () => {
-    setFeatures([...features, ""]);
+    setValue(`${type}.features`, [...features, ""]);
   };
 
   const removeFeature = (index) => {
-    setFeatures(features.filter((_, i) => i !== index));
+    const newFeatures = features.filter((_, i) => i !== index);
+    setValue(`${type}.features`, newFeatures);
   };
 
   return (
@@ -175,7 +172,7 @@ function PackageTier({
           )}
         />
 
-        <div className="space-y-4">
+        <div className="space-y-4 flex flex-col">
           <FormLabel>Features</FormLabel>
           {features.map((_, index) => (
             <FormField
@@ -290,30 +287,15 @@ export default function CreateGig() {
         response_time: "",
         english_level: "",
         description: "",
-        basicPackage: {
-          title: "",
-          description: "",
-          delivery_time: "",
-          revisions: "",
-          price: 0,
-          features: [""],
-        },
-        standardPackage: {
-          title: "",
-          description: "",
-          delivery_time: "",
-          revisions: "",
-          price: 0,
-          features: [""],
-        },
-        premiumPackage: {
-          title: "",
-          description: "",
-          delivery_time: "",
-          revisions: "",
-          price: 0,
-          features: [""],
-        },
+
+        title: "",
+        description: "",
+        delivery_time: "",
+        revisions: "",
+        price: 0,
+        features: [""],
+
+
         coordinates: { lat: 0, lng: 0 },
       });
     } catch (error) {
