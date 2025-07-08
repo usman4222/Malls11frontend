@@ -79,6 +79,7 @@ export default function VerifyAccountEmail() {
             }
         } catch (err) {
             toast.error(err?.response?.data?.message || "Error resending OTP");
+            console.log("eror dd",err);
         } finally {
             setIsResending(false);
         }

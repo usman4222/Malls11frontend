@@ -145,7 +145,10 @@ function FreelancerProposal() {
                   <TableCell>
                     <div className="space-y-1 w-[27rem]">
                       <p className="text-xl font-[500]">
-                        {(proposal?.cover_letter?.split(" ").slice(0, 50).join(" ") || "No Title") + (proposal?.cover_letter?.split(" ").length > 50 ? "..." : "")}
+                         {proposal.cover_letter
+                                                        ? proposal.cover_letter.slice(0, 50) + (proposal.cover_letter.length > 100 ? "..." : "")
+                                                        : "No Title"}
+                        {/* {(proposal?.cover_letter?.split(" ").slice(0, 50).join(" ") || "No Title") + (proposal?.cover_letter?.split(" ").length > 50 ? "..." : "")} */}
                       </p>
                       <div className="flex gap-3 text-sm text-muted-foreground">
                         {/* <div className="flex items-center gap-1">

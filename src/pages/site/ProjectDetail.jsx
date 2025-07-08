@@ -43,6 +43,7 @@ const ProjectDetail = () => {
 
 
     return (
+        // <></>
         <div className="mt-16 flex gap-5 flex-col">
             <div className="py-6 bg-[#F1FCFA]">
                 <SectionWrapper className="sm:px-20 px-10">

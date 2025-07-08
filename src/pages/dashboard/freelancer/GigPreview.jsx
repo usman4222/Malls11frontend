@@ -30,6 +30,8 @@ export default function GigPreview() {
   const [selectedStatus, setSelectedStatus] = useState(gig?.status || "Draft");
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
+  console
+
   const handleStatusUpdate = async (newStatus) => {
     const prevStatus = selectedStatus;
     setSelectedStatus(newStatus);

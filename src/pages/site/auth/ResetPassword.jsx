@@ -37,6 +37,7 @@ export default function ResetPassword() {
       setIsLoading(true);
       const data = await resetPassword({ email, newPassword, tempToken });
 
+      console.log("Reset Password Response:", data || "No response data");
       if (data.success) {
         toast.success("Password reset successful!");
         localStorage.removeItem("email");

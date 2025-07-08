@@ -48,10 +48,11 @@ export default function VerifyForgetEmail() {
                 }
             );
 
-            if (res.data?.success === true) {
+            console.log("Verify OTP Response 1:", res.data || "No response data");
+
+            if (res.status === 200) {
                 toast.success(res.data.message);
                 navigate(`/auth/forget-password/reset-password?tempToken=${tempToken}`);
-
             } else {
                 toast.error(res.data.message || "Verification failed");
             }
@@ -78,6 +79,8 @@ export default function VerifyForgetEmail() {
                 { email },
 
             );
+            console.log("Resend OTP Response:", res.data || "No response data");
+            
 
             if (res.data?.success) {
                 toast.success(res.data.message || "OTP resent successfully!");

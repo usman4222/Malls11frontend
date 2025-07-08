@@ -11,6 +11,7 @@ import proposalSlice from "./slices/propsoal/proposalSlice"
 import myProposals from "./slices/propsoal/freelancer/myProposalSlice"
 import clientProposalSlice from "./slices/propsoal/client/proposalSlice"
 import gigSlice from './slices/gig/gigSlice'
+import reviewSlice from './slices/review/reviewSlice'
 
 // Combine reducers
 const rootReducer = combineReducers({
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   createProposal: proposalSlice,
   freelancerProposals: myProposals,
   clientProposals: clientProposalSlice,
-  gigs: gigSlice
+  gigs: gigSlice,
+  reviews: reviewSlice
 })
 
 // Persist config

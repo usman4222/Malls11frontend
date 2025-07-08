@@ -11,6 +11,7 @@ import ProjectDetail from '../pages/site/ProjectDetail';
 import { ProtectedRoute } from './protectedRoutes/protectedRoute';
 import FreelancerProfile from '../pages/site/FreelancerProfile';
 import FreelancerGigDetails from '../pages/site/FreelancerGigDetails';
+import ProviderRegistrationForm from '../pages/site/ProviderRegistrationForm';
 
 const siteRoutes = () => ([
     <Route path="/" element={<LandingPage />} key="landing" />,
@@ -21,6 +22,7 @@ const siteRoutes = () => ([
     <Route path="/blogs" element={<Blogs />} key="blogs" />,
     <Route path="/projects" element={<Projects />} key="projects" />,
     <Route path="/frelancers" element={<Freelancers />} key="frelancers" />,
+    <Route path="/provider-form" element={<ProviderRegistrationForm />} key="frelancers" />,
     <Route
         path="/projects/project-details/:id"
         element={

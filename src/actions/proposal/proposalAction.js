@@ -53,7 +53,10 @@ export const getSingleProposal = (proposalId) => async (dispatch) => {
     try {
         dispatch(GET_SINGLE_PROPOSAL_REQUEST());
         
-        const { data } = await axiosInstance.get(`/project/proposal/${proposalId}`);
+        const { data } = await axiosInstance.get(`/project/single-proposal/${proposalId}`);
+
+        console.log("Single Proposal Data:", data);
+        
 
         dispatch(GET_SINGLE_PROPOSAL_SUCCESS(data));
 

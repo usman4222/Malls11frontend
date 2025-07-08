@@ -15,16 +15,22 @@ const SendProposalForm = ({ singleProject }) => {
     const [fixedPrice, setFixedPrice] = useState("");
     const [duration, setDuration] = useState("");
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const proposalData = {
             project_id: singleProject._id,
             cover_letter: coverLetter,
-            hourly_rate: singleProject.project_type === "hourly" ? hourlyRate : undefined,
-            fixed_price: singleProject.project_type === "fixed" ? fixedPrice : undefined,
             duration,
+            ...(singleProject.project_type?.toLowerCase() === "hourly" && hourlyRate && { hourly_rate: Number(hourlyRate) }),
+            ...(singleProject.project_type?.toLowerCase() === "fixed" && fixedPrice && { fixed_price: Number(fixedPrice) }),
         };
+
+        console.log("Submitting Proposal Data:", proposalData);
+        console.log("Project type:", singleProject.project_type);
+
+
 
         try {
             await dispatch(createProposal(proposalData));
@@ -52,7 +58,7 @@ const SendProposalForm = ({ singleProject }) => {
                     <h2 className="text-xl font-semibold text-gray-900 mb-6">Send Your Proposal</h2>
 
                     <div className="space-y-6">
-                        {singleProject.project_type === "fixed" ? (
+                        {singleProject.project_type === "Fixed" ? (
                             <div className="mb-6">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Your Fixed Price</label>
                                 <input

@@ -65,8 +65,10 @@ function ClientProject() {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    setCountries(getAllCountries());
+    const result = getAllCountries();
+    setCountries(result);
   }, []);
+
 
   useEffect(() => {
     console.log("Form errors:", form.formState.errors);
@@ -361,11 +363,15 @@ function ClientProject() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {countries.map((country) => (
-                            <SelectItem key={country} value={country}>
-                              {country}
-                            </SelectItem>
-                          ))}
+                          {Array.isArray(countries) && countries.length > 0 ? (
+                            countries.map((country) => (
+                              <SelectItem key={country} value={country}>
+                                {country}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem disabled>No countries available</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

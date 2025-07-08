@@ -8,6 +8,7 @@ import FreelancerReviews from "../../components/SiteComponents/FreelancerReviews
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../actions/profile/profileAction";
 import { useParams } from "react-router-dom";
+import { getFreelancerReviews } from "../../actions/reviews/reviewAction";
 
 const packages = {
     basic: {
@@ -63,6 +64,13 @@ export default function FreelancerProfile() {
     const [selected, setSelected] = useState("basic");
     const dispatch = useDispatch();
     const { viewedUser } = useSelector((state) => state.user);
+    const { freelancerReviews } = useSelector((state) => state.reviews)
+
+    useEffect(() => {
+        if (id) {
+            dispatch(getFreelancerReviews(id))
+        }
+    }, [dispatch, id])
 
 
     useEffect(() => {
@@ -76,6 +84,7 @@ export default function FreelancerProfile() {
 
 
     return (
+        // <></>
         <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -97,17 +106,6 @@ export default function FreelancerProfile() {
                                 </div>
 
                                 <div className="flex-1 space-y-3">
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                        <h1 className="text-xl font-semibold text-gray-900">{viewedUser?.fullName}</h1>
-                                        <div className="flex items-center gap-2">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white">
-                                                Admin's Choice
-                                            </span>
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-green-600 text-green-600">
-                                                • Online
-                                            </span>
-                                        </div>
-                                    </div>
 
                                     <p className="text-gray-600">Welcome to Expert Profile Here Turning Your Ideas into Reality!</p>
 
@@ -116,18 +114,8 @@ export default function FreelancerProfile() {
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                                             ))}
-                                            <span className="text-sm font-medium ml-1">4.9</span>
-                                            <span className="text-sm text-gray-500">(321)</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                Level 2
-                                            </span>
-                                            <div className="flex gap-1">
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                            </div>
+                                            <span className="text-sm font-medium ml-1">{freelancerReviews?.averageRating}</span>
+                                            <span className="text-sm text-gray-500">{(freelancerReviews?.totalReviews)}</span>
                                         </div>
                                     </div>
 
@@ -292,7 +280,7 @@ export default function FreelancerProfile() {
             </div>
             {/* <FreelancerPortfolio /> */}
             <FreelancerFaq />
-            {/* <FreelancerReviews /> */}
+            <FreelancerReviews id={viewedUser?._id} />
             <FreelancerGigs />
         </div>
     )
