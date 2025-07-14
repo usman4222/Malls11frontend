@@ -28,10 +28,10 @@ export const freelancerRoutesConfig = [
         component: <FreelancerProfile />,
     },
     {
-        path: "/freelancer-dashboard/manage-gigs",
-        name: "Manage Gigs",
-        icon: <FilePlus2 className="mr-2 h-4 w-4" />,
-        component: <ManageGigs />,
+        path: "/freelancer-dashboard/verify-freelancer",
+        name: "Verify Client",
+        icon: <VerifiedIcon className="mr-2 h-4 w-4" />,
+        component: <VerifyClient />,
     },
     {
         path: "/freelancer-dashboard/preview-gigs/:id",
@@ -40,16 +40,16 @@ export const freelancerRoutesConfig = [
         component: <GigPreview />,
     },
     {
-        path: "/freelancer-dashboard/verify-freelancer",
-        name: "Verify Client",
-        icon: <VerifiedIcon className="mr-2 h-4 w-4" />,
-        component: <VerifyClient />,
-    },
-    {
         path: "/freelancer-dashboard/create-gig",
         name: "Create Gig",
         icon: <VerifiedIcon className="mr-2 h-4 w-4" />,
         component: <CreateGig />,
+    },
+    {
+        path: "/freelancer-dashboard/manage-gigs",
+        name: "Manage Gigs",
+        icon: <FilePlus2 className="mr-2 h-4 w-4" />,
+        component: <ManageGigs />,
     },
     {
         path: "/freelancer-dashboard/freelancer-proposal",

@@ -26,9 +26,6 @@ const ProjectDetail = () => {
 
     const userId = id
 
-    console.log("Project Detail Page - Project Data:", singleProject);
-    console.log("🧠 RENDER ProjectDetail - id:", id);
-
     useEffect(() => {
         if (!id) {
             console.warn("❌ No ID in URL. useEffect not firing.");
@@ -55,7 +52,7 @@ const ProjectDetail = () => {
                 </SectionWrapper>
             </div>
             <ExploreCard />
-            {loadingSingleProject ? (
+            {loadingSingleProject || !singleProject  ? (
                 <SpinnerSquare />
             ) : (
                 <>
@@ -135,8 +132,7 @@ const ProjectDetail = () => {
                                                 {singleProject.project_doc ? (
                                                     <a
                                                         href={singleProject.project_doc}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
+                                                        download
                                                         className="text-blue-600 hover:underline"
                                                     >
                                                         Download Document

@@ -69,18 +69,22 @@ export const updateFreelancerProposal = (proposalId, updatedData) => async (disp
 
 export const withdrawFreelancerProposal = (projectId) => async (dispatch) => {
     dispatch(WITHDRAW_FREELANCER_PROPOSAL_REQUEST());
-
+  
     try {
-        const { data } = await axiosInstance.patch(`/proposal/withdraw-proposal/${projectId}`);
-
-        dispatch(WITHDRAW_FREELANCER_PROPOSAL_SUCCESS(data.data));
-        return response.data.proposal;
+      const { data } = await axiosInstance.patch(
+        `/proposal/withdraw-proposal/${projectId}`,
+        { status: "Withdrawn" } 
+      );
+  
+      dispatch(WITHDRAW_FREELANCER_PROPOSAL_SUCCESS(data.data));
+      return data.proposal;
     } catch (error) {
-        dispatch(
-            WITHDRAW_FREELANCER_PROPOSAL_FAIL(
-                error.response?.data?.message || "Failed to update project status"
-            )
-        );
-        throw error;
+      dispatch(
+        WITHDRAW_FREELANCER_PROPOSAL_FAIL(
+          error.response?.data?.message || "Failed to update project status"
+        )
+      );
+      throw error;
     }
-};
+  };
+  

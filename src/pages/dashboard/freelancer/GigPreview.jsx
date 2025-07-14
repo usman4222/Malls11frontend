@@ -30,7 +30,11 @@ export default function GigPreview() {
   const [selectedStatus, setSelectedStatus] = useState(gig?.status || "Draft");
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
-  console
+  useEffect(() => {
+    if (id) {
+      dispatch(getSingleGig(id));
+    }
+  }, [dispatch, id]);
 
   const handleStatusUpdate = async (newStatus) => {
     const prevStatus = selectedStatus;
@@ -55,13 +59,6 @@ export default function GigPreview() {
   }, [gig]);
 
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getSingleGig(id));
-    }
-  }, [dispatch, id]);
-
-
   const handleSubmitForReview = async () => {
     setIsSubmitting(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
@@ -69,6 +66,7 @@ export default function GigPreview() {
   }
 
   return (
+    // <></>
     <div className="pb-48 bg-gray-50">
       <ToastContainer />
       <div className="bg-background border-b sticky top-0 z-50">

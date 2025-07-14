@@ -63,6 +63,11 @@ function NavBar() {
   const user = useSelector((state) => state.user || null);
   const token = user?.token
   const currentUser = user.currentUser
+  const tokenExpiry = useSelector((state) => state.user.tokenExpiry);
+
+
+  console.log("currentUser",currentUser)
+  console.log("token",token)
 
   const onLogoutClick = () => {
     handleLogout(dispatch, token);

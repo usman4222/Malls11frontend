@@ -109,7 +109,7 @@ function ManageClientProjects({ type, project }) {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[300px]">Title</TableHead>
-                                <TableHead>Cost/Type</TableHead>
+                                <TableHead>Cost Type</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Visibility</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
@@ -119,7 +119,7 @@ function ManageClientProjects({ type, project }) {
                             {clientProjects.map((project) => (
                                 <TableRow key={project.id}>
                                     <TableCell>
-                                        <div className="space-y-1 w-[27rem]">
+                                        <div className="space-y-1">
                                             <div className="font-medium">{project.title}</div>
                                             <div className="flex gap-3 text-sm text-muted-foreground">
                                                 <div className="flex items-center gap-1">
@@ -134,25 +134,10 @@ function ManageClientProjects({ type, project }) {
                                                     </span>
                                                     {project.location}
                                                 </div>
-                                                <div className="flex items-center gap-1">
-                                                    <span>
-                                                        <Calendar className="h-4 w-4" />
-                                                    </span>
-                                                    Posted on {new Date(project.createdAt).toLocaleDateString()}
-                                                </div>
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell >
-                                        <div className="font-medium">
-                                            {project.fixed_price !== null && project.fixed_price !== undefined ? (
-                                                `$${project.fixed_price.toLocaleString()}`
-                                            ) : project.hourly_rate ? (
-                                                `$${project.hourly_rate.min.toLocaleString()} - $${project.hourly_rate.max.toLocaleString()}`
-                                            ) : (
-                                                "N/A"
-                                            )}
-                                        </div>
                                         <div className="text-sm text-muted-foreground">
                                             {project.fixed_price !== null && project.fixed_price !== undefined
                                                 ? "Fixed price"

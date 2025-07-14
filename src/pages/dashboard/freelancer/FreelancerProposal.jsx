@@ -44,7 +44,6 @@ function FreelancerProposal() {
     (state) => state.freelancerProposals
   );
 
-  console.log("freelancerProposals", freelancerProposals);
   useEffect(() => {
     dispatch(getMyProposals());
   }, [dispatch]);
@@ -56,6 +55,7 @@ function FreelancerProposal() {
     try {
       await dispatch(withdrawFreelancerProposal(proposalId));
       toast.success("Proposal withdrawn successfully");
+      dispatch(getMyProposals());
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to withdraw proposal");
     }
@@ -145,9 +145,9 @@ function FreelancerProposal() {
                   <TableCell>
                     <div className="space-y-1 w-[27rem]">
                       <p className="text-xl font-[500]">
-                         {proposal.cover_letter
-                                                        ? proposal.cover_letter.slice(0, 50) + (proposal.cover_letter.length > 100 ? "..." : "")
-                                                        : "No Title"}
+                        {proposal.cover_letter
+                          ? proposal.cover_letter.slice(0, 50) + (proposal.cover_letter.length > 100 ? "..." : "")
+                          : "No Title"}
                         {/* {(proposal?.cover_letter?.split(" ").slice(0, 50).join(" ") || "No Title") + (proposal?.cover_letter?.split(" ").length > 50 ? "..." : "")} */}
                       </p>
                       <div className="flex gap-3 text-sm text-muted-foreground">
@@ -158,8 +158,8 @@ function FreelancerProposal() {
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
                           {proposal?.submitted_at
-                            ? formatRelativeTime(proposal?.submitted_at)
-                            : "Unknown date"}
+                            ? formatRelativeTime(proposal.submitted_at)
+                            : "Unknown"}
                         </div>
                       </div>
                     </div>
